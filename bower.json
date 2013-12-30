@@ -1,0 +1,26 @@
+{
+  "name": "playback_session",
+  "version": "0.0.0",
+  "authors": [
+    "pragdave <dave@pragprog.com>"
+  ],
+  "description": "Play back a session recorded with record_session",
+  "main": "lib/playback_session.js",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+      "rxjs": "~2.2",
+      "jquery": "~1.9"
+  },
+  "devDependencies": {
+      "mocha" : "*",
+      "chai"  : "*"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

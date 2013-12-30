@@ -1,0 +1,34 @@
+.terminal {
+    background: black;
+    color: white;
+}
+
+.terminal pre {
+    margin: 0;
+}
+
+.terminal pre .b_ { 
+    font-weight: bold;
+}
+
+.terminal pre .u_ { 
+    text-decoration: underline;
+}
+
+.terminal pre .f0_ { color: rgb( 20,  20,  20) }
+.terminal pre .f1_ { color: rgb(255,  85,  85) }
+.terminal pre .f2_ { color: rgb( 85, 255,  85) }
+.terminal pre .f3_ { color: rgb(255, 255,  85) }
+.terminal pre .f4_ { color: rgb( 85,  85, 255) }
+.terminal pre .f5_ { color: rgb(255,  85, 255) }
+.terminal pre .f6_ { color: rgb( 85, 255, 255) }
+.terminal pre .f7_ { color: rgb(255, 255, 255) }
+
+.terminal pre .b0_ { background-color: rgb( 20,  20,  20) }
+.terminal pre .b1_ { background-color: rgb(255,  85,  85) }
+.terminal pre .b2_ { background-color: rgb( 85, 255,  85) }
+.terminal pre .b3_ { background-color: rgb(255, 255,  85) }
+.terminal pre .b4_ { background-color: rgb( 85,  85, 255) }
+.terminal pre .b5_ { background-color: rgb(255,  85, 255) }
+.terminal pre .b6_ { background-color: rgb( 85, 255, 255) }
+.terminal pre .b7_ { background-color: rgb(255, 255, 255) }
