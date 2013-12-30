@@ -36,7 +36,7 @@ class ScreenBuffer
             mine = @[attr]
             hers = other[attr]
             return true if mine == hers
-            console.log("Attribute mismatch: #{attr} -> #{mine} vs. #{hers}")
+#            console.log("Attribute mismatch: #{attr} -> #{mine} vs. #{hers}")
             false
         
     ############################################################
@@ -47,7 +47,7 @@ class ScreenBuffer
 
     ############################################################
 
-    constructor: ([@width, @height]) ->
+    constructor: ([@height, @width]) ->
         @lines = (@create_line(@width) for i in [1..@height])
         @reset_dirty()
 

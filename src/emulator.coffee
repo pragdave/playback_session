@@ -3,7 +3,8 @@ class Emulator
     constructor: (@dom_terminal, @sb, @html) ->
       @line = @col = 1
       @attr = new ScreenBuffer.Attrs()
-
+      console.log "Screen is #{@sb.width} x #{@sb.height}"
+      
     update: ->
         @html.update()
         
@@ -19,7 +20,12 @@ class Emulator
                 
     nl: (char, args) ->
         @newline(1)
-            
+
+    ht: (char, args) ->
+        @col = 8*(((@col-1)/8) >> 0) + 9
+        @normalize_col()
+
+        
     cuu: (char, args) ->
         @line -= (args[0] || 1)
         @normalize_line()

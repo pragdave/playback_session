@@ -6,6 +6,7 @@ class AnsiFSM
             "\r":     [ "plain", "cr" ]
             "\n":     [ "plain", "nl" ]
             "\u0008": [ "plain", "bs" ]
+            "\t":      [ "plain", "ht" ]
             default:  [ "plain", "echo_char" ]
 
         esc_seen:
@@ -53,7 +54,6 @@ class AnsiFSM
         @state = @states.plain
 
     accept_string: (string) ->
-        console.log("Accept string #{string}")
         @accept_char(char) for char in string
         @terminal.update()
         

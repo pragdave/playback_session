@@ -26,7 +26,7 @@ class HtmlViewer
         result.join("")
 
     add_attributes: (result, from, to) ->
-        return if from == to
+        return if from.is_equal_to(to)
         result.push("</span>")
         css_attrs = []
         css_attrs.push("b_") if to.bold
