@@ -120,12 +120,12 @@ class Emulator
             when    1 then null   # application cursor keys
             when   12 then null   # blinking cursor
             when   25 then null   # show/hide cursor
-            when   47 then @use_primary()
+            when   47 then @use_primary_buffer()
             when 1048 then @use_primary_cursor()              
 
             when 1049
                 @use_primary_cursor()
-                @use_primary()
+                @use_primary_buffer()
                                                  
             else console.log("Unsupported rm #{args[0]}")
 
@@ -134,12 +134,11 @@ class Emulator
             when    1 then null   # application cursor keys
             when   12 then null   # blinking cursor
             when   25 then null   # show/hide cursor
-            when   47 then @use_alternate()
+            when   47 then @use_alternate_buffer()
             when 1048 then @use_alternate_cursor()
             when 1049
-                console.log(1049)
                 @use_alternate_cursor()
-                @use_alternate()
+                @use_alternate_buffer()
                 
             else console.log("Unsupported sm #{args[0]}")
 
@@ -167,12 +166,11 @@ class Emulator
         @line = 1 if @line < 1
         @line = @sb.height if @line > @sb.height
                 
-
-    use_primary: ->
+    use_primary_buffer: ->
         @sb.use_primary()
         @update()
 
-    use_alternate: ->
+    use_alternate_buffer: ->
         @sb.use_alternate()
         @update()
 

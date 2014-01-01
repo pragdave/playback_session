@@ -71,11 +71,12 @@ class ScreenBuffer
             @dirty_lines[line] = true
             col += 1
             if col >= @width
-                col = 0
-                line += 1
-                if line >= @scroll_bottom
-                    line = @scroll_bottom - 1
-                    @scroll_up()
+                col = @width - 1
+                # col = 0
+                # line += 1
+                # if line >= @scroll_bottom
+                #     line = @scroll_bottom - 1
+                #     @scroll_up()
 
         [ line+1, col+1 ]
 
@@ -116,7 +117,7 @@ class ScreenBuffer
         for line_no in [from_line..to_line]
             line = @lines[line_no]
             start_col = (if line_no == from_line then from_col else 0)
-            end_col   = (if line_no == to_line   then to_col else @width-1)
+            end_col   = (if line_no == to_line   then to_col   else @width-1)
             for col in [start_col..end_col]
                 callback(line_no, line[col])
 
