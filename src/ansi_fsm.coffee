@@ -19,6 +19,8 @@ class AnsiFSM
             default: [ "skip_emacs_term_mode_sequence" ]
             
         csi_seen:
+            "?":     [ "private_seen" ]
+            ">":     [ "private_seen" ]
             "0":     [ "csi_seen", null, "collect_args" ]
             "1":     [ "csi_seen", null, "collect_args" ]
             "2":     [ "csi_seen", null, "collect_args" ]
@@ -31,6 +33,7 @@ class AnsiFSM
             "9":     [ "csi_seen", null, "collect_args" ]
             ";":     [ "csi_seen", null, "collect_args" ]
 
+            "@":     [ "plain", "ich" ]
             "A":     [ "plain", "cuu" ]
             "B":     [ "plain", "cud" ]
             "C":     [ "plain", "cuf" ]
@@ -41,14 +44,39 @@ class AnsiFSM
             "H":     [ "plain", "cup" ]
             "J":     [ "plain", "ed"  ]
             "K":     [ "plain", "el"  ]
+            "L":     [ "plain", "il"  ]
             "S":     [ "plain", "su"  ]
             "T":     [ "plain", "sd"  ]
+            "d":     [ "plain", "vpa" ]
             "f":     [ "plain", "cup" ]
             "m":     [ "plain", "sgr" ]
             "n":     [ "plain", "dsr" ]
+            "r":     [ "plain", "decstbm" ]
             "s":     [ "plain", "scp" ]
             "u":     [ "plain", "rsp" ]
 
+            default: [ "plain", null, "unhandled" ]
+
+        private_seen:
+            "0":     [ "private_seen", null, "collect_args" ]
+            "1":     [ "private_seen", null, "collect_args" ]
+            "2":     [ "private_seen", null, "collect_args" ]
+            "3":     [ "private_seen", null, "collect_args" ]
+            "4":     [ "private_seen", null, "collect_args" ]
+            "5":     [ "private_seen", null, "collect_args" ]
+            "6":     [ "private_seen", null, "collect_args" ]
+            "7":     [ "private_seen", null, "collect_args" ]
+            "8":     [ "private_seen", null, "collect_args" ]
+            "9":     [ "private_seen", null, "collect_args" ]
+            ";":     [ "private_seen", null, "collect_args" ]
+
+            "c":     [ "plain" ]       # send device attributes
+            "h":     [ "plain", "sm" ]
+            "l":     [ "plain", "rm" ]
+
+        
+            default: [ "plain", null, "punhandled" ]
+        
 
     constructor: (@terminal)->
         @state = @states.plain
@@ -75,3 +103,8 @@ class AnsiFSM
         else
             @args.push(@args.pop() * 10 + (char - "0"))
 
+    unhandled: (char) ->
+            console.log "Unhandled CSI #{@args.join(';')} #{char}"
+
+    punhandled: (char) ->
+            console.log "Unhandled PRIVATE CSI #{@args.join(';')} #{char}"

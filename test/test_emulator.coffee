@@ -21,10 +21,10 @@ describe 'Emulator', ->
             html: (content) ->
                 @content = content
 
-        @sb   = new ScreenBuffer([10, 10])
-        @html = new HtmlViewer(mock_dom, @sb)
-        @emu = new Emulator(mock_dom, @sb, @html)
-        @dc  = ScreenBuffer.Cell.default_cell()
+        @sb     = new ScreenBuffer([10, 10])
+        @html   = new HtmlViewer(mock_dom, @sb)
+        @emu    = new Emulator(mock_dom, @sb, @html)
+        @dc     = new ScreenBuffer.Cell
         @helper = TestEmulatorHelper
         
     describe 'constructor', ->
@@ -224,7 +224,7 @@ describe 'Emulator', ->
             
     describe 'erase display', ->
         beforeEach ->
-            @star = ScreenBuffer.Cell.default_cell("*")
+            @star = new ScreenBuffer.Cell("*")
             @sb.fill([1,1], [@sb.height, @sb.width], @star)
             @sb.reset_dirty()
             
@@ -257,7 +257,7 @@ describe 'Emulator', ->
 
     describe "erase line", ->
         beforeEach ->
-            @star = ScreenBuffer.Cell.default_cell("*")
+            @star = new ScreenBuffer.Cell("*")
             @sb.fill([1,1], [@sb.height, @sb.width], @star)
             @sb.reset_dirty()
             
@@ -318,9 +318,9 @@ describe 'Emulator', ->
             @emu.sgr(null, [2])
             @emu.attr.bold.should.equal false
 
-        it 'with argument 3 should set underline', ->
+        it 'with argument 4 should set underline', ->
             @emu.attr.ul = false
-            @emu.sgr(null, [3])
+            @emu.sgr(null, [4])
             @emu.attr.ul.should.equal true
 
         it 'with argument 7 should set inverse', ->

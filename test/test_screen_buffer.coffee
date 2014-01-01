@@ -1,24 +1,39 @@
 chai.should()
 
+HEIGHT = 8
+WIDTH = 4
+
+# Scroll region
+TOP = 4
+BOTTOM = 6
+    
+
+li = (i) -> 100+i
+
+
 describe 'ScreenBuffer', ->
     beforeEach ->
-        @sb = new ScreenBuffer([4,3])
-        @dc = ScreenBuffer.Cell.default_cell()
+        @sb = new ScreenBuffer([HEIGHT, WIDTH])
+        @dc = new ScreenBuffer.Cell
+        @lines = @sb.lines
+        @range = [0...HEIGHT]
+        (@lines[i][0].char = li(i)) for i in @range
+        
             
     describe 'constructor', ->
         it 'should remember the width and height', ->
-            @sb.width.should.equal 4
-            @sb.height.should.equal 3
+            @sb.width.should.equal  WIDTH
+            @sb.height.should.equal HEIGHT
 
         it 'should have the right number of lines', ->
-            @sb.lines.should.have.length(3)
+            @sb.lines.should.have.length(HEIGHT)
 
         it 'should have lines of the correct length', ->
-            @sb.lines[i].should.have.length(4) for i in [0..2]
+            @sb.lines[i].should.have.length(WIDTH) for i in @range
 
         it 'should have lines containing default cells', ->
-            @sb.lines[0][0].should.eql @dc
-            @sb.lines[2][3].should.eql @dc
+            (@sb.lines[i][0].char.should.equal li(i)) for i in @range
+            @sb.lines[2][3].should.eql  @dc
     
 
     describe 'put', ->
@@ -68,6 +83,118 @@ describe 'ScreenBuffer', ->
             @sb.dirty(2).should.equal true
             @sb.dirty(3).should.equal false
 
+        it 'should scroll if we write to the last position on the screen', ->
+            @sb.put("X", @dc.attrs, HEIGHT, WIDTH).should.eql [HEIGHT, 1]
+            @sb.lines[i][0].char.should.equal li(i+1) for i in [0..HEIGHT-2]
+            @sb.lines[HEIGHT-2][WIDTH-1].char.should.equal "X"
+            @sb.lines[HEIGHT-1][0].should.eql @dc
 
+        it 'should scroll if we write to the last position of the scroll region', ->
+            @sb.set_scroll_region(TOP, BOTTOM)
+            @sb.put("X", @dc.attrs, BOTTOM, WIDTH).should.eql [BOTTOM, 1]
+            @sb.dump_to_console()
+            @sb.lines[i][0].char.should.equal li(i) for i in [0..TOP-2]
+            @sb.lines[i][0].char.should.equal li(i+1) for i in [TOP-1...BOTTOM-1]
+            @sb.lines[BOTTOM-2][WIDTH-1].char.should.equal "X"
+            @sb.lines[BOTTOM-1][0].should.eql @dc
+            @sb.lines[i][0].char.should.equal li(i) for i in [BOTTOM...HEIGHT]
+
+    describe 'insert_lines', ->
+            
+        it 'should start out with lines in their right places', ->
+            @lines[i][0].char.should.equal li(i) for i in @range
+
+        it 'inserting one line at the bottom should add just one line', ->
+            @sb.insert_lines(HEIGHT, 1)
+            @lines[i][0].char.should.equal li(i) for i in [0...HEIGHT-1]
+            @lines[HEIGHT-1][0].should.eql @dc
+
+        it 'inserting one line at the top should add just one line', ->
+            @sb.insert_lines(1, 1)
+            @lines[0][0].should.eql @dc
+            @lines[i][0].char.should.equal li(i)-1 for i in [1...HEIGHT-1]
+
+        it 'inserting two lines at the top should add two lines', ->
+            @sb.insert_lines(1, 2)
+            @lines[i][0].should.eql @dc for i in [0...2]
+            @lines[i][0].char.should.equal li(i)-2 for i in [2...HEIGHT-1]
+
+        it 'inserting three lines at the top should add three lines', ->
+            @sb.insert_lines(1, 3)
+            @lines[i][0].should.eql @dc for i in [0...3]
+                                                
+
+        it 'inserting one line in the middle should make room', ->
+            @sb.insert_lines(2, 1)
+            @lines[1][0].should.eql @dc for i in [0...2]
+            @lines[0][0].char.should.equal li(0)
+            @lines[2][0].char.should.equal li(1)
+
+        it 'inserting two lines in the middle should make room', ->
+            @sb.insert_lines(2, 2)
+            @lines[i][0].should.eql @dc for i in [1..2]
+            @lines[0][0].char.should.equal li(0)
+            @lines[3][0].char.should.equal li(1)
+
+
+    describe 'insert_lines with scroll region set', ->
+            
+        beforeEach ->
+            @sb.set_scroll_region(TOP, BOTTOM)
+
+        it 'should start out with lines in their right places', ->
+            @lines[i][0].char.should.equal li(i) for i in @range
+
+        it 'inserting one line at the bottom of the screen should be ignored', ->
+            @sb.insert_lines(HEIGHT, 1)
+            @lines[i][0].char.should.equal li(i) for i in @range
+
+        it 'inserting one line at the top of the screen should be ignored', ->
+            @sb.insert_lines(1, 1)
+            @lines[i][0].char.should.equal li(i) for i in @range
+
+        it 'inserting one line at the bottom of the scroll region should add just one line', ->
+            @sb.insert_lines(BOTTOM, 1)
+            @lines[i][0].char.should.equal li(i) for i in [0...BOTTOM-1]
+            @lines[BOTTOM-1][0].should.eql @dc
+            @lines[i][0].char.should.equal li(i) for i in [BOTTOM...HEIGHT]
+
+        it 'inserting two lines at the bottom should add just one line', ->
+            @sb.insert_lines(BOTTOM, 2)
+            @lines[i][0].char.should.equal li(i) for i in [0...BOTTOM-1]
+            @lines[BOTTOM-1][0].should.eql @dc
+            @lines[i][0].char.should.equal li(i) for i in [BOTTOM...HEIGHT]
+
+        it 'inserting one line at the top of the scroll region should add just one line', ->
+            @sb.insert_lines(TOP, 1)
+            @lines[i][0].char.should.equal li(i) for i in [0...TOP-1]
+            @lines[TOP-1][0].should.eql @dc
+            @lines[i][0].char.should.equal li(i)-1 for i in [TOP...BOTTOM]
+            @lines[i][0].char.should.equal li(i) for i in [BOTTOM...HEIGHT]
+
+        it 'inserting two lines at the top of the scroll region should add two lines', ->
+            @sb.insert_lines(TOP, 2)
+            @lines[i][0].char.should.equal li(i) for i in [0...TOP-1]
+            @lines[TOP-1][0].should.eql @dc
+            @lines[TOP][0].should.eql @dc
+            @lines[i][0].char.should.equal li(i)-2 for i in [TOP+1...BOTTOM]
+            @lines[i][0].char.should.equal li(i) for i in [BOTTOM...HEIGHT]
+                        
+        it 'inserting three lines at the top should clear the scroll region', ->
+            @sb.insert_lines(TOP, BOTTOM-TOP+1)
+            @lines[i][0].char.should.equal li(i) for i in [0...TOP-1]
+            @lines[i][0].should.eql @dc for i in [TOP-1...BOTTOM]
+            @lines[i][0].char.should.equal li(i) for i in [BOTTOM...HEIGHT]
+
+        it 'inserting one line in the middle should make room', ->
+            @sb.insert_lines(TOP+1, 1)
+            @lines[i][0].char.should.equal li(i) for i in [0...TOP]
+            @lines[TOP][0].should.eql @dc
+            @lines[i][0].char.should.equal li(i)-1 for i in [TOP+1...BOTTOM]
+            @lines[i][0].char.should.equal li(i) for i in [BOTTOM...HEIGHT]
+
+
+
+                                        
             
             
