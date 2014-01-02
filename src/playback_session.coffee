@@ -9,7 +9,7 @@ jQuery.fn.extend
 jQuery.ajaxPrefilter "json script", (options) ->
       options.crossDomain = true
 
-$(".terminald").emulate()
+$(".terminal").emulate()
 
 
 

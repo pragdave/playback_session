@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  h1= title
+
+  p The following sessions are available for your emulating pleasure…
+
+  ul
+    for session in files
+      li
+        a(href="show/" + session)= session

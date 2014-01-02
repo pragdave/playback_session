@@ -1,0 +1,35 @@
+doctype html
+html
+  head
+    title= session_name
+    meta(charset="UTF-8")
+    link(rel="stylesheet", href="/css/playback_session.css")
+    link(rel="stylesheet", href="/bower_components/handsontable/dist/jquery.handsontable.full.css")
+    link(rel='stylesheet', href='/stylesheets/style.css')
+
+    script(src="/bower_components/jquery/jquery.js")
+    script(src="/bower_components/rxjs/rx.js")
+    script(src="/bower_components/rxjs/rx.time.js")
+    script(src="/bower_components/handsontable/dist/jquery.handsontable.full.js")
+  body
+
+    h1= session_name
+
+    pre.terminal(data-from="/sessions/" + session_name)
+
+    div#editor
+      div#editor-table
+
+    input.edit-button(type="button", value="Edit", data-for=".terminal")
+      
+    script(src="/js/driver.js")
+    script(src="/js/ansi_fsm.js")
+    script(src="/js/screen_buffer.js")
+    script(src="/js/emulator.js")
+    script(src="/js/html_viewer.js")
+    script(src="/js/playback_session.js")
+
+    script(src="/js/editor/editor.js")
+
+  </body>
+</html>
