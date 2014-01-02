@@ -1,11 +1,11 @@
 (exports ? window).Driver =
-class Driver              
+class Driver
+
     for_recording: (recording_name, dom_terminal) ->
-        @load_recording(recording_name, (recording_data) => @handle_recording_data(recording_data, dom_terminal))
+        @load_recording(recording_name, (recording_data) =>
+                 @handle_recording_data(recording_data, dom_terminal))
 
     handle_recording_data: (recording_data, dom_terminal) ->
-        console.log("handle #{recording_data}")
-        console.log("terminal #{dom_terminal}")
         data = recording_data.data
         source = Rx.Observable.generateWithRelativeTime(
                      0,                        # initial state

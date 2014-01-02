@@ -1,3 +1,23 @@
+#editor {
+    position: fixed;
+    top: 5%;
+    right: 5%;
+    height: 90%;
+    width: 40%;
+    display: none;
+    overflow: scroll;
+    padding: 0.5em;
+    background: #dddddd;
+}
+
+#editor-table {
+    overflow: none;
+}
+
+#editor-table .current-row {
+    background: #c0d0d0;
+}
+
 .terminal {
     background: rgb(20, 20, 20);
     color: white;
