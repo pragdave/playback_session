@@ -1,15 +1,18 @@
 jQuery.fn.extend
-  emulate: (options) ->
-    return @each (_, terminal) ->
-      console.log(terminal)
-      dom_terminal = $(terminal)
-      recording_name = dom_terminal.data("from")
-      (new Driver).for_recording(recording_name, dom_terminal)
+  recording_playback: (options) ->
+    return @each (_, playback_window) ->
+      console.log(playback_window)
+      playback_window = $(playback_window)
+      recording_name = playback_window.data("from")
+      Player.load_recording recording_name, (recording_data) ->
+          player = new Player(recording_data, playback_window)
+          new VcrControls(player, playback_window)
+          
 
 jQuery.ajaxPrefilter "json script", (options) ->
       options.crossDomain = true
 
-$(".terminal").emulate()
+$(".playback").recording_playback()
 
 
 

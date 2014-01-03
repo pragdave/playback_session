@@ -2,7 +2,7 @@
     position: fixed;
     top: 5%;
     right: 5%;
-    height: 90%;
+    height: 70%;
     width: 40%;
     display: none;
     overflow: scroll;
@@ -11,7 +11,7 @@
 }
 
 #editor-table {
-    overflow: none;
+    overflow: scroll;
 }
 
 #editor-table .current-row {

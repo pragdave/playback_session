@@ -15,14 +15,15 @@ html
 
     h1= session_name
 
-    pre.terminal(data-from="/sessions/" + session_name)
+    div.playback(data-from="/sessions/" + session_name)
 
     div#editor
       div#editor-table
 
     input.edit-button(type="button", value="Edit", data-for=".terminal")
       
-    script(src="/js/driver.js")
+    script(src="/js/vcr_controls.js")
+    script(src="/js/player.js")
     script(src="/js/ansi_fsm.js")
     script(src="/js/screen_buffer.js")
     script(src="/js/emulator.js")

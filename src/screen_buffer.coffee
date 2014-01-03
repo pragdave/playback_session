@@ -134,6 +134,9 @@ class ScreenBuffer
     clear: (from, to) ->
         @fill(from, to, new Cell())
 
+    clear_all: ->
+        @clear([1,1], [@height, @width])
+        
     reset_dirty: (value = false) ->
         @dirty_lines = (value for _ in @lines)
        

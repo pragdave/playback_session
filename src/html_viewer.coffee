@@ -3,9 +3,11 @@ class HtmlViewer
 
     EMPTY_ATTR: new ScreenBuffer.Attrs
     
-    constructor: (@dom, @screen_buffer) ->
+    constructor: (playback_window, @screen_buffer) ->
+        @dom = $("<pre class=\"terminal\"></pre>")
         @lines = ($("<pre>&nbsp;</pre>") for line in [1..@screen_buffer.height])
         @dom.html(@lines)
+        playback_window.prepend(@dom)
         @update()
 
     update: ->
