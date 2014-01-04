@@ -5,13 +5,13 @@
     height: 70%;
     width: 40%;
     display: none;
-    overflow: scroll;
     padding: 0.5em;
     background: #dddddd;
 }
 
 #editor-table {
-    overflow: scroll;
+    height: 100%;
+    overflow: scroll !important;
 }
 
 #editor-table .current-row {
@@ -32,7 +32,7 @@
 .vcr-buttons input {
     font-size: 80% !important;
     font-weight: bold;
-    color: #228822;
+    color: #114422;
     margin-right: 0.5em;
 }
 

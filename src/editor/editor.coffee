@@ -12,40 +12,32 @@ class Editor
                     false
         callback(result)
         
-    constructor: (@edit_button) ->
+    constructor: (@player) ->
+        @data = @player.data
         @editor = $("#editor")
-        @edit_button.on "click", (e) =>
-            e.preventDefault()
-            what_we_are_editing = $($(e.target).data("for"))
-            @start_editor(what_we_are_editing)
-
-    start_editor: (what_we_are_editing) ->
-        @edit_button.hide()
-        source = what_we_are_editing.data("from")
-        console.log(source)
-        (new Driver()).load_recording source, (recording) =>
-            @editor.show()
-            console.log("loaded")
-            console.log(recording)
-            data = ( [ delay, JSON.stringify(string) ] for [delay,string] in recording.data)
-            $("#editor-table").handsontable
-                allowInvalid: true
-                contextMenu: ['row_above', 'row_below', 'remove_row' ]
-                colHeaders:  [ 'Delay', 'Content' ]
-                colWidths:   [ null, 400 ]
-                currentRowClassName: 'current-row'
-                data: data
-                nativeScrollbars: true
-                columns: [
-                    { type: 'numeric' }
-                  ,
-                    { type: 'text', validator: @json_validator }
-                ]
-
+        @editor.show()
+        @table = @editor.find("#editor-table")
         
-$ ->
-    console.log($(".edit-button"))
-    $(".edit-button").each (_, button) ->
-        console.log button
-        new Editor($(button))
-            
+        data = ([ delay, JSON.stringify(string) ] for [delay,string] in @data)
+                         
+        @table.handsontable
+            allowInvalid: true
+#            contextMenu: ['row_above', 'row_below', 'remove_row' ]
+            colHeaders:  [ 'Delay', 'Content' ]
+            colWidths:   [ null, 400 ]
+            currentRowClassName: 'current-row'
+            data: data
+            height:  @table.height()
+            columns: [
+                { type: 'numeric' }
+              ,
+                { type: 'text', validator: @json_validator }
+            ]
+
+        @handson = @table.handsontable('getInstance')
+        
+        $(document).on(Player.EV_STEP, (event, n) =>
+            @handson.selectCell n, 0
+        )
+        
+

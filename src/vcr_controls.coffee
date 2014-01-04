@@ -11,13 +11,16 @@ class VcrControls
             play   = @button("play",             @player.play, 1)
             fast1  = @button("&gt;&gt;",         @player.play, 0.5)
             fast2  = @button("&gt;&gt;&gt;",     @player.play, 0.25)
-            fast3  = @button("&gt;&gt;&gt;&gt;", @player.plat, 0.01)
+            fast3  = @button("&gt;&gt;&gt;&gt;", @player.play, 0.01)
+            step   = @button("step",             @player.step)
+            
+            edit   = @button("EDIT",   @create_editor)
 
             rewind.prop('disabled', true)
             stop.prop('disabled',   true)
 
             nav    = $("<nav class=\"vcr-buttons\"></nav>")
-            nav.append rewind, stop, slow, play, fast1, fast2, fast3
+            nav.append rewind, step, stop, slow, play, fast1, fast2, fast3, edit
 
             progress = $("<div class=\"vcr-progress\"></div>")
             progress.append nav
@@ -36,21 +39,24 @@ class VcrControls
                 play.prop('disabled', false)
                 stop.prop('disabled', true))
             
-            $(document).on(Player.EV_STEP, =>
+            $(document).on(Player.EV_STEP, (x) =>
                 percent = 100.0*@player.current_time / @player.max_time
                 progress
                 .find(".ui-progressbar-value")
                 .animate(
                     width: "#{percent}%"
                   ,
-                   queue: false
-                   easing: 'linear'
-                   duration: 600))
-                
+                    queue: false
+                    easing: 'linear'
+                    duration: 600))
+
+
+        create_editor: =>
+            new Editor(@player)
+            
 
         button: (label, on_click, arg) ->
             $("<input type=\"button\" value=\"#{label}\"/>")
-            .on("click",
-                (e) =>
-                    e.preventDefault()
-                    on_click(arg))
+            .on("click", (e) =>
+                             e.preventDefault()
+                             on_click(arg))

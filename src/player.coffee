@@ -49,7 +49,7 @@ class Player
         [ delay, string ] = @data[@playhead]
         @fsm.accept_string(string)
         @current_time += delay
-        $(document).triggerHandler(Player.EV_STEP, @current_time)
+        $(document).triggerHandler(Player.EV_STEP, @playhead)
         @playhead += 1
         
     rewind: (position = 0) =>
