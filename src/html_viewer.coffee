@@ -3,12 +3,19 @@ class HtmlViewer
 
     EMPTY_ATTR: new ScreenBuffer.Attrs
     
-    constructor: (playback_window, @screen_buffer) ->
+    constructor: (@playback_window, @screen_buffer) ->
         @dom = $("<pre class=\"terminal\"></pre>")
+        char = $('<pre><span id="wibble">M</span></pre>')
         @lines = ($("<pre>&nbsp;</pre>") for line in [1..@screen_buffer.height])
-        @dom.html(@lines)
-        playback_window.prepend(@dom)
-        @update()
+        @dom.append(@lines)
+        @dom.append(char)
+        @playback_window.prepend(@dom)
+        and_then = =>
+                width = $("#wibble").width()
+                @playback_window.css('width', (width * @screen_buffer.width + 24) + 'px')
+                char.remove()
+                @update()
+        setTimeout(and_then, 0)
 
     update: ->
         @screen_buffer.for_each_dirty_line @update_line

@@ -18,11 +18,30 @@
     background: #c0d0d0;
 }
 
+.vcr-progress {
+    position: relative;
+}
+
+.vcr-buttons {
+    position: absolute;
+    top: 0.3em;
+    left: 0.5em;
+    height: 100%;
+}
+
+.vcr-buttons input {
+    font-size: 80% !important;
+    font-weight: bold;
+    color: #228822;
+    margin-right: 0.5em;
+}
+
 .terminal {
     background: rgb(20, 20, 20);
     color: white;
     padding: 0.5em;
     border: 0.5em solid black;
+    border-radius: 6px;
 }
 
 .terminal pre {

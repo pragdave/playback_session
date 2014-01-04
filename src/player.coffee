@@ -1,6 +1,13 @@
 (exports ? window).Player =
 class Player
 
+   @event_name: (name) ->
+       "evPlayer_#{name}"        
+
+    @EV_IDLE    = Player.event_name("idle")
+    @EV_STEP    = Player.event_name("step")
+    @EV_PLAYING = Player.event_name("playing")
+    
     @load_recording: (recording_name, callback) ->
         console.log("loading #{recording_name}")
         jQuery.ajax
@@ -12,19 +19,22 @@ class Player
 
     constructor: (recording, @playback_window) ->
         @data = recording.data
+        @max_time = @data.reduce(((acc, value) -> acc + value[0]), 0)
         @sb    = new ScreenBuffer(recording.size)
         @html  = new HtmlViewer(@playback_window, @sb)
         @new_emulator()
         @state = 'idle'
         
-    play: (end_position = @data.length, interval = -1) =>
+    play: (factor= -1, end_position = @data.length) =>
+        @pause()
+        @playhead = 0 if @playhead >= @data.length
         @change_state('playing')
         @source = Rx.Observable.generateWithRelativeTime(
-                     @playhead,                                  # initial state
-                     (n) -> n < end_position,                    # termination
-                     (n) -> n + 1,                               # step function
-                     (n) -> n,                                   # value returned
-                     (n) => if interval < 0 then @data[n][0] else interval) # and the time
+                     @playhead,                 # initial state
+                     (n) -> n < end_position,   # termination
+                     (n) -> n + 1,              # step function
+                     (n) -> n,                  # value returned
+                     (n) => factor*@data[n][0]) # and the time
 
         @playback = @source.subscribe(
             (n)    => @step(),
@@ -36,20 +46,24 @@ class Player
         @change_state('idle')
 
     step: =>
-        @fsm.accept_string(@data[@playhead][1])
+        [ delay, string ] = @data[@playhead]
+        @fsm.accept_string(string)
+        @current_time += delay
+        $(document).triggerHandler(Player.EV_STEP, @current_time)
         @playhead += 1
         
-    fast_forward: (interval=0, end_position = 999999999) =>
-        @pause()
-        @play(end_position, interval)
-
     rewind: (position = 0) =>
         @pause()
         @playhead = 0
+        @current_time = 0
         @sb.clear_all()
         @new_emulator()
         @emulator.update()
-        @fast_forward(0, position) if position > 0
+        if position > 0
+            @fast_forward(0, position) if position > 0
+        else
+            $(document).triggerHandler(Player.EV_STEP, @current_time)
+
 
 
     finish_play: ->
@@ -60,9 +74,12 @@ class Player
         @emulator = new Emulator(@playback_window, @sb, @html)
         @fsm  = new AnsiFSM(@emulator)
         @playhead = 0
+        @current_time = 0
                 
     change_state: (new_state) ->
         if @state != new_state
             @state = new_state
+            $(document).triggerHandler
+                type: Player.event_name(new_state)
         
             
