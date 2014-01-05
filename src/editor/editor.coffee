@@ -14,8 +14,12 @@ class Editor
     handle_update: (changes, reason) =>
         return if reason is "loadData" or reason is "default"
         for [ row, col, oldVal, newVal ] in changes
-            newVal = JSON.parse(newVal) if col == 1
-            @data[row][col] = newVal
+            if col == 1
+                 newVal = JSON.parse(newVal) if col == 1
+                 @stream[row].op = newVal
+             else
+                 @stream[row].d = newVal
+                 
         @player.data_updated(changes[changes.length-1][0])  # row number of last change
     handle_supply_defaults: (changes, reason) =>
         return if reason == "loadData"
@@ -25,22 +29,22 @@ class Editor
         
         
     handle_remove_row: (row, count) =>
-        @data.splice(row, count)
+        @stream.splice(row, count)
         @player.data_updated(row)
         
     handle_create_row: (row, count) =>
-        @data.splice(row, 0, [ 0, ""  ]) for _ in [1..count]
+        @stream.splice(row, 0, { d: 0, op: "" }) for _ in [1..count]
         @handson.setDataAtCell(row, 0, 0,    "default")
         @handson.setDataAtCell(row, 1, '""', "default")
         @player.data_updated(row)
         
     constructor: (@player) ->
-        @data = @player.data
+        @stream = @player.stream
         @editor = $("#editor")
         @editor.show()
         @table = @editor.find("#editor-table")
 
-        mapped_data = ([delay, JSON.stringify(string)] for [delay, string] in @data)
+        mapped_stream = ([data.d, JSON.stringify(data.op)] for data in @stream)
         
         @table.handsontable
             allowInvalid: true

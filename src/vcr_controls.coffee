@@ -48,7 +48,7 @@ class VcrControls
                   ,
                     queue: false
                     easing: 'linear'
-                    duration: 600))
+                    duration: 500))
 
 
         create_editor: =>

@@ -9,3 +9,4 @@ class Recording
             jsonpCallback: "the_recording_data"
         .done((data, textStatus) -> callback(data))
         .fail((jqxhr, settings, exception) -> console.log(exception))
+

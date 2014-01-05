@@ -9,23 +9,23 @@ class Player
     @EV_PLAYING = Player.event_name("playing")
     
     constructor: (recording, @playback_window) ->
-        @data = recording.data
+        @stream = recording.stream
         @max_time = @calc_max_time()
         @sb    = new ScreenBuffer(recording.size)
         @html  = new HtmlViewer(@playback_window, @sb)
         @new_emulator()
         @state = 'idle'
         
-    play: (factor= -1, end_position = @data.length) =>
+    play: (factor= -1, end_position = @stream.length) =>
         @pause()
-        @playhead = 0 if @playhead >= @data.length
+        @playhead = 0 if @playhead >= @stream.length
         @change_state('playing')
         @source = Rx.Observable.generateWithRelativeTime(
                      @playhead,                 # initial state
                      (n) -> n < end_position,   # termination
                      (n) -> n + 1,              # step function
                      (n) -> n,                  # value returned
-                     (n) => factor*@data[n][0]) # and the time
+                     (n) => factor*@stream[n].d) # and the time
 
         @playback = @source.subscribe(
             (n)    => @step(),
@@ -37,9 +37,9 @@ class Player
         @change_state('idle')
 
     step: =>
-        [ delay, string ] = @data[@playhead]
-        @fsm.accept_string(string)
-        @current_time += delay
+        data = @stream[@playhead]
+        @fsm.accept_string(data.op)
+        @current_time += data.d
         @trigger_update()
         @playhead += 1
         
@@ -58,11 +58,9 @@ class Player
     # called when the data is manually edited
     data_updated: (to_row) ->
         @playhead = to_row
-        console.log("Before: current: #{@current_time}, max = #{@max_time}")
         @max_time = @calc_max_time()
         @current_time = 0
-        @current_time += (delay ? 0) for [delay, _] in @data[0...@playhead]
-        console.log("After: current: #{@current_time}, max = #{@max_time}")
+        @current_time += (delay ? 0) for [delay, _] in @stream[0...@playhead]
         @trigger_update()
 
     trigger_update: ->
@@ -70,7 +68,7 @@ class Player
         
     
     calc_max_time: ->
-        @data.reduce(((acc, [delay,_]) -> acc + (delay ? 0)), 0)
+        @stream.reduce(((acc, data) -> acc + (data.d ? 0)), 0)
         
     finish_play: ->
         @change_state('idle')
