@@ -4,7 +4,7 @@ jQuery.fn.extend
       console.log(playback_window)
       playback_window = $(playback_window)
       recording_name = playback_window.data("from")
-      Player.load_recording recording_name, (recording_data) ->
+      Recording.load recording_name, (recording_data) ->
           player = new Player(recording_data, playback_window)
           new VcrControls(player, playback_window)
           

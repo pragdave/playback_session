@@ -34,6 +34,11 @@
     font-weight: bold;
     color: #114422;
     margin-right: 0.5em;
+    width: 4em;
+}
+
+.vcr-buttons input.compress {
+    letter-spacing: -.3em;
 }
 
 .terminal {

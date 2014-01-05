@@ -5,14 +5,14 @@ class VcrControls
             @add_controls()
 
         add_controls: ->
-            rewind = @button("rewind", @player.rewind)
-            stop   = @button("pause",  @player.pause)
-            slow   = @button("½ &gt;",           @player.play, 2)
-            play   = @button("play",             @player.play, 1)
-            fast1  = @button("&gt;&gt;",         @player.play, 0.5)
-            fast2  = @button("&gt;&gt;&gt;",     @player.play, 0.25)
-            fast3  = @button("&gt;&gt;&gt;&gt;", @player.play, 0.01)
-            step   = @button("step",             @player.step)
+            rewind = @button("↩", @player.rewind)
+            stop   = @button("||",  @player.pause)
+            slow   = @button("½ ▶",  @player.play, 2)
+            play   = @button("▶",    @player.play, 1)
+            fast1  = @button("▶▶",   @player.play, 0.5,  "compress")
+            fast2  = @button("▶▶▶",  @player.play, 0.25, "compress")
+            fast3  = @button("▶▶▶▶", @player.play, 0.01, "compress")
+            step   = @button("↷",    @player.step)
             
             edit   = @button("EDIT",   @create_editor)
 
@@ -55,8 +55,9 @@ class VcrControls
             new Editor(@player)
             
 
-        button: (label, on_click, arg) ->
-            $("<input type=\"button\" value=\"#{label}\"/>")
+        button: (label, on_click, arg, klass) ->
+            klass = " class=\"#{klass}\"" if klass
+            $("<input type=\"button\" value=\"#{label}\"#{klass}/>")
             .on("click", (e) =>
                              e.preventDefault()
                              on_click(arg))

@@ -8,18 +8,9 @@ class Player
     @EV_STEP    = Player.event_name("step")
     @EV_PLAYING = Player.event_name("playing")
     
-    @load_recording: (recording_name, callback) ->
-        console.log("loading #{recording_name}")
-        jQuery.ajax
-            url: recording_name
-            dataType: "jsonp"
-            jsonpCallback: "the_recording_data"
-        .done((recording_data, textStatus) -> callback(recording_data))
-        .fail((jqxhr, settings, exception) -> console.log(exception))
-
     constructor: (recording, @playback_window) ->
         @data = recording.data
-        @max_time = @data.reduce(((acc, value) -> acc + value[0]), 0)
+        @max_time = @calc_max_time()
         @sb    = new ScreenBuffer(recording.size)
         @html  = new HtmlViewer(@playback_window, @sb)
         @new_emulator()
@@ -40,7 +31,7 @@ class Player
             (n)    => @step(),
             (err)  => console.log('Error: ' + err),
             ()     => @finish_play())
-            
+
     pause: =>
         @playback.dispose() if @playback
         @change_state('idle')
@@ -49,7 +40,7 @@ class Player
         [ delay, string ] = @data[@playhead]
         @fsm.accept_string(string)
         @current_time += delay
-        $(document).triggerHandler(Player.EV_STEP, @playhead)
+        @trigger_update()
         @playhead += 1
         
     rewind: (position = 0) =>
@@ -62,10 +53,25 @@ class Player
         if position > 0
             @fast_forward(0, position) if position > 0
         else
-            $(document).triggerHandler(Player.EV_STEP, @current_time)
+            @trigger_update()
 
+    # called when the data is manually edited
+    data_updated: (to_row) ->
+        @playhead = to_row
+        console.log("Before: current: #{@current_time}, max = #{@max_time}")
+        @max_time = @calc_max_time()
+        @current_time = 0
+        @current_time += (delay ? 0) for [delay, _] in @data[0...@playhead]
+        console.log("After: current: #{@current_time}, max = #{@max_time}")
+        @trigger_update()
 
-
+    trigger_update: ->
+        $(document).triggerHandler(Player.EV_STEP, @playhead)
+        
+    
+    calc_max_time: ->
+        @data.reduce(((acc, [delay,_]) -> acc + (delay ? 0)), 0)
+        
     finish_play: ->
         @change_state('idle')
         @playback = null
