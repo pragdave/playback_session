@@ -16,7 +16,7 @@ class Editor
         for [ row, col, oldVal, newVal ] in changes
             if col == 1
                  newVal = JSON.parse(newVal) if col == 1
-                 @stream[row].op = newVal
+                 @stream[row].val = newVal
              else
                  @stream[row].d = newVal
                  
@@ -44,14 +44,14 @@ class Editor
         @editor.show()
         @table = @editor.find("#editor-table")
 
-        mapped_stream = ([data.d, JSON.stringify(data.op)] for data in @stream)
+        mapped_stream = ([data.d, JSON.stringify(data.val)] for data in @stream)
         
         @table.handsontable
             allowInvalid: true
             contextMenu: ['row_above', 'row_below', 'remove_row' ]
             colHeaders:  [ 'Delay', 'Content' ]
             colWidths:   [ null, 400 ]
-            data:        mapped_data
+            data:        mapped_stream
             height:      @table.height()
             beforeCreateRow: @handle_supply_defaults
             afterChange:     @handle_update

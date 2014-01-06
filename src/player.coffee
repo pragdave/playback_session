@@ -38,7 +38,14 @@ class Player
 
     step: =>
         data = @stream[@playhead]
-        @fsm.accept_string(data.op)
+
+        switch data.t
+            when "op"
+                @fsm.accept_string(data.val)
+            else
+                console.log("Invalid data imported")
+                console.log(data)
+            
         @current_time += data.d
         @trigger_update()
         @playhead += 1
