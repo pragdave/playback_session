@@ -24,8 +24,21 @@ class Editor
             else
                 value
     
+    @elapsed_time_formatter = (row, cell, value, columnDef, dataContext) ->
+        min = Math.floor(value / 60000)
+        value -= min * 60000
+        sec = (value/1000).toFixed(2)
+        if value < 10000 then sec = "0" + sec
+        "#{min}:#{sec}"
+    
                                 
     @columns = [
+            id: "elapsed"
+            name: "mm:ss.ss"
+            field: "elapsed"
+            formatter: Editor.elapsed_time_formatter
+            cssClass: "ed-elapsed-time"
+          ,
             id: "type"
             name: "Type"
             field: "t"
@@ -46,13 +59,13 @@ class Editor
     ]
     
     @options =
-        editable: true,
-        enableAddRow: true,
+        editable:             true,
+        enableAddRow:         true,
         enableCellNavigation: true,
-        asyncEditorLoading: false,
-        autoEdit: false    
+        asyncEditorLoading:   false,
+        autoEdit:             false    
         enableColumnReorder:  false
-        fullWidthRows: true
+        fullWidthRows:        true
         
     json_validator = (value, callback) ->
         result = try

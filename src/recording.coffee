@@ -7,6 +7,12 @@ class Recording
             url: recording_name
             dataType: "jsonp"
             jsonpCallback: "the_recording_data"
-        .done((data, textStatus) -> callback(data))
+        .done((data, textStatus) -> callback(Recording.add_elapsed(data)))
         .fail((jqxhr, settings, exception) -> console.log(exception))
 
+    @add_elapsed: (data) ->
+        elapsed = 0
+        for row in data.stream
+            row.elapsed = elapsed
+            elapsed += row.d
+        data

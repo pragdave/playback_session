@@ -44,6 +44,13 @@
     background: #c0d0d0;
 }
 
+.ed-elapsed-time {
+    text-align: right;
+    color: silver;
+    background: #223;
+    padding-right: 1em  !important;
+}
+
 .vcr-progress {
     position: relative;
 }
