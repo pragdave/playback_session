@@ -4,16 +4,24 @@ html
     title= session_name
     meta(charset="UTF-8")
     link(rel="stylesheet", href="/css/playback_session.css")
-    link(rel="stylesheet", href="/bower_components/handsontable/dist/jquery.handsontable.full.css")
+
     link(rel="stylesheet", href="/bower_components/jquery-ui/themes/trontastic/jquery-ui.css")
     link(rel="stylesheet", href="/bower_components/jquery-ui/themes/trontastic/jquery.ui.theme.css")
+    link(rel='stylesheet', href='/bower_components/slickgrid/slick.grid.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
 
     script(src="/bower_components/jquery/jquery.js")
     script(src="/bower_components/jquery-ui/ui/jquery-ui.js")
+    script(src="/bower_components/jquery.event.drag-drop/event.drag/jquery.event.drag.js")
     script(src="/bower_components/rxjs/rx.js")
     script(src="/bower_components/rxjs/rx.time.js")
-    script(src="/bower_components/handsontable/dist/jquery.handsontable.full.js")
+
+    script(src="/bower_components/slickgrid/slick.core.js")
+    script(src="/bower_components/slickgrid/slick.grid.js")
+    script(src="/bower_components/slickgrid/slick.editors.js")
+
+    script(src="/bower_components/markdown/lib/markdown.js")
+
   body
 
     h1= session_name

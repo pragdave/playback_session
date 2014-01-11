@@ -15,6 +15,13 @@ class Player
         @html  = new HtmlViewer(@playback_window, @sb)
         @new_emulator()
         @state = 'idle'
+        @popup_div = $("<div class=\"popup\"></div>")
+        @popup_div.dialog(
+            show: 600
+            hide: 600
+            autoOpen: false
+            modal: false
+        )
         
     play: (factor= -1, end_position = @stream.length) =>
         @pause()
@@ -42,6 +49,10 @@ class Player
         switch data.t
             when "op"
                 @fsm.accept_string(data.val)
+            when "popup"
+                @handle_popup(data.val)
+            when "popdown"
+                @handle_popdown(data.val)
             else
                 console.log("Invalid data imported")
                 console.log(data)
@@ -86,6 +97,14 @@ class Player
         @fsm  = new AnsiFSM(@emulator)
         @playhead = 0
         @current_time = 0
+
+    handle_popup: (popup) ->
+        @popup_div.html(markdown.toHTML(popup))
+        @popup_div.closest(".ui-dialog").find(".ui-dialog-titlebar").hide()
+        @popup_div.dialog("open")
+        
+    handle_popdown: (popup) ->
+        @popup_div.dialog("close")
                 
     change_state: (new_state) ->
         if @state != new_state

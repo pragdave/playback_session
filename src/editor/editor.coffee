@@ -1,6 +1,59 @@
 (exports ? window).Editor =
 class Editor
 
+    @context_menu = $("""
+    <ul id="popup-menu">
+      <li id="pu-insert">Insert row</li>
+      <li id="pu-delete">Delete row</li>
+    </ul>
+    """)
+
+    @type_select_menu = $("""
+    <select tabIndex='0' class='type-select-menu'>
+        <option value='op'>Session output</option>
+        <option value='popup'>Popup-window</option>
+        <option value='popdown'>Close popup</option>
+    </select>");
+    """)
+
+    @value_formatter = (row, cell, value, columnDef, dataContext) ->
+        switch dataContext.t
+            when "op"
+                str = JSON.stringify(value)
+                str.substr(1, str.length-2)
+            else
+                value
+    
+                                
+    @columns = [
+            id: "type"
+            name: "Type"
+            field: "t"
+            editor: (args) => new RowTypeEditor(args)
+          ,
+            id: "delay"
+            name: "Delay"
+            field: "d"
+            editor: Slick.Editors.Integer
+          ,
+            id: "val"
+            name: "Value"
+            field: "val"
+            editor: Slick.Editors.LongText
+            formatter: Editor.value_formatter
+            width: 200
+            
+    ]
+    
+    @options =
+        editable: true,
+        enableAddRow: true,
+        enableCellNavigation: true,
+        asyncEditorLoading: false,
+        autoEdit: false    
+        enableColumnReorder:  false
+        fullWidthRows: true
+        
     json_validator = (value, callback) ->
         result = try
                     JSON.parse(value)
@@ -11,63 +64,86 @@ class Editor
                     false
         callback(result)
 
-    handle_update: (changes, reason) =>
-        return if reason is "loadData" or reason is "default"
-        for [ row, col, oldVal, newVal ] in changes
-            if col == 1
-                 newVal = JSON.parse(newVal) if col == 1
-                 @stream[row].val = newVal
-             else
-                 @stream[row].d = newVal
-                 
-        @player.data_updated(changes[changes.length-1][0])  # row number of last change
-    handle_supply_defaults: (changes, reason) =>
-        return if reason == "loadData"
-        for [ row, col, oldVal, newVal ], i in changes
-            changes[i][2] = 0    if col is 0 and not oldVal
-            changes[i][2] = '""' if col is 1 and not oldVal
-        
-        
-    handle_remove_row: (row, count) =>
-        @stream.splice(row, count)
-        @player.data_updated(row)
-        
-    handle_create_row: (row, count) =>
-        @stream.splice(row, 0, { d: 0, op: "" }) for _ in [1..count]
-        @handson.setDataAtCell(row, 0, 0,    "default")
-        @handson.setDataAtCell(row, 1, '""', "default")
-        @player.data_updated(row)
-        
     constructor: (@player) ->
         @stream = @player.stream
         @editor = $("#editor")
         @editor.show()
         @table = @editor.find("#editor-table")
 
-        mapped_stream = ([data.d, JSON.stringify(data.val)] for data in @stream)
-        
-        @table.handsontable
-            allowInvalid: true
-            contextMenu: ['row_above', 'row_below', 'remove_row' ]
-            colHeaders:  [ 'Delay', 'Content' ]
-            colWidths:   [ null, 400 ]
-            data:        mapped_stream
-            height:      @table.height()
-            beforeCreateRow: @handle_supply_defaults
-            afterChange:     @handle_update
-            afterRemoveRow:  @handle_remove_row
-            afterCreateRow:  @handle_create_row
-            currentRowClassName: 'current-row'
-            columns: [
-                { type: 'numeric' }
-              ,
-                { type: 'text', validator: json_validator }
-            ]
+        @grid = new Slick.Grid("#editor-table",
+                               @stream,
+                               Editor.columns,
+                               Editor.options)
 
-        @handson = @table.handsontable('getInstance')
-        
-        $(document).on(Player.EV_STEP, (event, n) =>
-            @handson.selectCell n, 0
-        )
+        @setup_right_click(@grid)
+
+    setup_right_click: (grid) ->
+        menu = Editor.context_menu
+        grid.onContextMenu.subscribe (e) =>
+          e.preventDefault()
+          cell = grid.getCellFromEvent(e)
+          menu
+             .css("top", e.pageY - 16)
+             .css("left", e.pageX)
+          $("body").prepend(menu)
+          $("#pu-insert").on "click", (e) =>
+              @insert_row(cell.row)
+          $("#pu-delete").on "click", (e) =>
+              @delete_row(cell.row)
+
+          $("body").one "click", () ->
+            menu.remove()
+
+    insert_row: (row) ->
+        new_row =
+            t: "op"
+            d: 0
+            val: ""
+        @stream.splice(row, 0, new_row);
+        @grid.setData(@stream);
+        @grid.render();
+        @grid.scrollRowIntoView(row, false);
+
+    delete_row: (row) ->
+        @stream.splice(row, 1);
+        @grid.setData(@stream);
+        @grid.render();
+        @grid.scrollRowIntoView(row, false);
+
+class RowTypeEditor
+
+    constructor: (args) ->
+        console.log args
+        menu = Editor.type_select_menu
+        @loadValue(args.item.t)
+        menu.appendTo(args.container)
+        menu.focus()
+
+    destroy: () ->
+        Editor.type_select_menu.remove()
+
+    focus: () ->
+        Editor.type_select_menu.focus()
+
+    loadValue: (value) ->
+        @default_value = value
+        Editor.type_select_menu.val(value)
+
+    applyValue: (row_data, value) ->
+         row_data.t = value
+    
+    serializeValue: () ->
+        Editor.type_select_menu.val()
+
+    isValueChanged: () ->
+        Editor.type_select_menu.val() != @default_value
+
+    validate: () ->
+        valid: true
+        msg:   null
+
+#         $(document).on(Player.EV_STEP, (event, n) =>
+#             @handson.selectCell n, 0
+#         )
         
 

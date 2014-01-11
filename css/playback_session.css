@@ -1,3 +1,29 @@
+#popup-menu {
+    position: absolute;
+    background: #bbc;
+    border: 1px solid gray;
+    padding: 2px;
+    display: inline-block;
+    min-width: 100px;
+    -moz-box-shadow: 3px 3px 3px black;
+    -webkit-box-shadow: 3px 3px 3px black;
+    z-index: 99999;
+}
+
+#popup-menu li {
+    list-style: none;
+    padding: 4px;
+    border-top: #888 dotted 1px;
+}
+
+#popup-menu li:first-of-type {
+    border-top: none;
+}
+
+#popup-menu li:hover {
+    background: white;
+}
+
 #editor {
     position: fixed;
     top: 5%;

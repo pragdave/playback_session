@@ -9,10 +9,12 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-      "rxjs": "~2.2",
-      "jquery": "~1.9",
+      "rxjs":      "~2.2",
+      "jquery":    "~1.9",
       "jquery-ui": "*",
-      "handsontable": "*"
+      "jquery.event.drag-drop": "*",
+      "markdown":  "*",
+      "slickgrid": "*"
   },
   "devDependencies": {
       "mocha" : "*",
