@@ -8,9 +8,9 @@ class Player
     @EV_STEP    = Player.event_name("step")
     @EV_PLAYING = Player.event_name("playing")
     
-    constructor: (recording, @playback_window) ->
+    constructor: (@recording, @playback_window) ->
         @stream = recording.stream
-        @max_time = @calc_max_time()
+        @max_time = Recording.calculate_times(@recording)
         @sb    = new ScreenBuffer(recording.size)
         @html  = new HtmlViewer(@playback_window, @sb)
         @new_emulator()
@@ -76,18 +76,14 @@ class Player
     # called when the data is manually edited
     data_updated: (to_row) ->
         @playhead = to_row
-        @max_time = @calc_max_time()
-        @current_time = 0
-        @current_time += (delay ? 0) for [delay, _] in @stream[0...@playhead]
+        @max_time = Recording.calculate_times(@recording)
+        @current_time = @stream[@playhead].elapsed
         @trigger_update()
 
     trigger_update: ->
         $(document).triggerHandler(Player.EV_STEP, @playhead)
         
     
-    calc_max_time: ->
-        @stream.reduce(((acc, data) -> acc + (data.d ? 0)), 0)
-        
     finish_play: ->
         @change_state('idle')
         @playback = null

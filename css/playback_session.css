@@ -40,8 +40,8 @@
     overflow: scroll !important;
 }
 
-#editor-table .current-row {
-    background: #c0d0d0;
+#editor-table .selected {
+    background: #466;
 }
 
 .ed-elapsed-time {
@@ -49,6 +49,10 @@
     color: silver;
     background: #223;
     padding-right: 1em  !important;
+}
+
+.active {
+    background: grey;
 }
 
 .vcr-progress {

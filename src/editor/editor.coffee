@@ -25,11 +25,14 @@ class Editor
                 value
     
     @elapsed_time_formatter = (row, cell, value, columnDef, dataContext) ->
-        min = Math.floor(value / 60000)
-        value -= min * 60000
-        sec = (value/1000).toFixed(2)
-        if value < 10000 then sec = "0" + sec
-        "#{min}:#{sec}"
+        if isNaN(value)
+            "---"
+        else
+            min = Math.floor(value / 60000)
+            value -= min * 60000
+            sec = (value/1000).toFixed(2)
+            if value < 10000 then sec = "0" + sec
+            "#{min}:#{sec}"
     
                                 
     @columns = [
@@ -87,8 +90,20 @@ class Editor
                                @stream,
                                Editor.columns,
                                Editor.options)
-
+        @grid.onCellChange.subscribe (e, args) =>
+            @cell_changed(args)
+        @setup_highlight_callback(@grid)
         @setup_right_click(@grid)
+
+    setup_highlight_callback: (grid) ->
+        console.log grid
+        grid.setSelectionModel(new Slick.RowSelectionModel())
+        $(document).on(Player.EV_STEP, (event, row) ->
+           grid.scrollRowIntoView(row, false)
+           grid.setSelectedRows([row])
+           console.log grid.getSelectedRows()
+        )
+        
 
     setup_right_click: (grid) ->
         menu = Editor.context_menu
@@ -107,21 +122,28 @@ class Editor
           $("body").one "click", () ->
             menu.remove()
 
+    cell_changed: (args) ->
+        if args.cell == 2     # delay
+            @player.data_updated(args.row)
+            @grid.invalidate()            
+
     insert_row: (row) ->
         new_row =
             t: "op"
             d: 0
             val: ""
-        @stream.splice(row, 0, new_row);
-        @grid.setData(@stream);
-        @grid.render();
-        @grid.scrollRowIntoView(row, false);
+        @stream.splice(row, 0, new_row)
+        @player.data_updated(row)
+        @grid.setData(@stream)
+        @grid.invalidate()
+        @grid.scrollRowIntoView(row, false)
 
     delete_row: (row) ->
-        @stream.splice(row, 1);
-        @grid.setData(@stream);
-        @grid.render();
-        @grid.scrollRowIntoView(row, false);
+        @stream.splice(row, 1)
+        @player.data_updated(row)
+        @grid.setData(@stream)
+        @grid.invalidate()
+        @grid.scrollRowIntoView(row, false)
 
 class RowTypeEditor
 
@@ -155,8 +177,5 @@ class RowTypeEditor
         valid: true
         msg:   null
 
-#         $(document).on(Player.EV_STEP, (event, n) =>
-#             @handson.selectCell n, 0
-#         )
         
 

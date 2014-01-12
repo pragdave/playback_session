@@ -16,3 +16,10 @@ class Recording
             row.elapsed = elapsed
             elapsed += row.d
         data
+
+    # update the elapsed time, and return the maximum value
+    @calculate_times: (data) ->
+        @add_elapsed(data)
+        last = data.stream[data.stream.length-1]
+        last.elapsed + last.d
+        
