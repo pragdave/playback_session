@@ -13,15 +13,18 @@ class VcrControls
             fast2  = @button("▶▶▶",  @player.play, 0.25, "compress")
             fast3  = @button("▶▶▶▶", @player.play, 0.01, "compress")
             step   = @button("↷",    @player.step)
-            
-            edit   = @button("EDIT",   @create_editor)
+
 
             rewind.prop('disabled', true)
             stop.prop('disabled',   true)
 
             nav    = $("<nav class=\"vcr-buttons\"></nav>")
-            nav.append rewind, step, stop, slow, play, fast1, fast2, fast3, edit
+            nav.append rewind, step, stop, slow, play, fast1, fast2, fast3
 
+            if typeof(Editor) == "function"            
+                edit   = @button("EDIT",   @create_editor)
+                nav.append edit
+                
             progress = $("<div class=\"vcr-progress\"></div>")
             progress.append nav
             

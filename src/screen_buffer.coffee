@@ -63,6 +63,10 @@ class ScreenBuffer
         line -= 1
         col  -= 1
 
+        if line >= @scroll_bottom
+            line = @scroll_bottom - 1
+            @scroll_up()
+
         for i in [0...chars.length]
             cell = @lines[line][col]
             cell.char = chars.charAt(i)
@@ -72,11 +76,8 @@ class ScreenBuffer
             col += 1
             if col >= @width
                 col = @width - 1
-                # col = 0
-                # line += 1
-                # if line >= @scroll_bottom
-                #     line = @scroll_bottom - 1
-                #     @scroll_up()
+                col = 0
+                line += 1
 
         [ line+1, col+1 ]
 

@@ -18,8 +18,9 @@ class TestEmulatorHelper
 describe 'Emulator', ->
     beforeEach ->
         mock_dom =
-            html: (content) ->
-                @content = content
+            html: (@content) ->
+            prepend: (dom) ->
+            css:     (_) ->
 
         @sb     = new ScreenBuffer([10, 10])
         @html   = new HtmlViewer(mock_dom, @sb)
@@ -86,6 +87,17 @@ describe 'Emulator', ->
             @emu.nl()
             @emu.line.should.equal 2
             @helper.validate_dirty []
+
+        describe 'on last line', ->
+            it 'should scroll', ->
+                @emu.cup(null, [@sb.height, 1])
+                @emu.echo_char("A", null)
+                @sb.lines[@sb.height-1][0].char.should.equal "A"
+                @emu.line.should.equal @sb.height
+                @emu.nl()
+                @emu.line.should.equal @sb.height
+                @sb.lines[@sb.height-2][0].char.should.equal "A"
+        
 
     describe 'cursor up', ->
         beforeEach ->

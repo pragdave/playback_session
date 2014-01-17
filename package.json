@@ -1,0 +1,27 @@
+{
+  "name": "playback_session",
+  "version": "0.0.0",
+  "description": "Playback the recording of a terminal session into a DOM element",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/pragdave/playback_session.git"
+  },
+  "author": "pragdave <dave@pragprog.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pragdave/playback_session/issues"
+  },
+  "homepage": "https://github.com/pragdave/playback_session",
+  "devDependencies": {
+    "gulp-coffee": "~1.2.5",
+    "gulp-util": "~2.2.10",
+    "gulp": "~3.3.4",
+    "coffee-script": "~1.6.3"
+  }
+}

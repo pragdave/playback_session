@@ -12,9 +12,7 @@
       "rxjs":      "~2.2",
       "jquery":    "~1.9",
       "jquery-ui": "*",
-      "jquery.event.drag-drop": "*",
-      "markdown":  "*",
-      "slickgrid": "*"
+      "marked":  "*"
   },
   "devDependencies": {
       "mocha" : "*",

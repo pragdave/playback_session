@@ -12,7 +12,7 @@ class HtmlViewer
         @playback_window.prepend(@dom)
         and_then = =>
                 width = $("#wibble").width()
-                @playback_window.css('width', (width * @screen_buffer.width + 24) + 'px')
+                @playback_window.css('width', (width * @screen_buffer.width + 48) + 'px')
                 char.remove()
                 @update()
         setTimeout(and_then, 0)
@@ -29,11 +29,17 @@ class HtmlViewer
         result = [ "<span>" ]
         for cell in line
             @add_attributes(result, attr, cell.attrs)
-            result.push cell.char
+            result.push @escape(cell.char)
             attr = cell.attrs
         result.push("</span>")
         result.join("")
 
+    escape: (char) ->
+        switch char
+            when "<" then "&lt;"
+            when "&" then "&amp;"
+            else char
+            
     add_attributes: (result, from, to) ->
         return if from.is_equal_to(to)
         result.push("</span>")

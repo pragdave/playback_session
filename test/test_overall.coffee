@@ -1,27 +1,13 @@
 chai.should()
 
-# class TestEmulatorHelper
-#     @validate_all: (sb, from, to, char) ->
-#         sb.each from, to, (line_no, screen_char) =>
-#             screen_char.should.eql char
-
-#     @validate_dirty: (sb, dirty=[]) ->
-#         clean = [1..sb.height]
-#         for line_no in dirty
-#             sb.dirty(line_no).should.equal true
-#             clean[line_no-1] = null
-#         for line_no in clean when line_no
-#             sb.dirty(line_no).should.equal false
-            
-        
-
 describe 'Integration', ->
     beforeEach ->
         mock_dom =
-            html: (content) ->
-                @content = content
+            html: (@content) ->
+            prepend: (dom) ->
+            css:     (_) ->
 
-        @sb   = new ScreenBuffer([86, 25])
+        @sb   = new ScreenBuffer([25, 86])
         @html = new HtmlViewer(mock_dom, @sb)
         @emu = new Emulator(mock_dom, @sb, @html)
         # @helper = TestEmulatorHelper
@@ -34,9 +20,9 @@ describe 'Integration', ->
             @fsm.accept_string(@seq)
             @line = @sb.lines[0]
 
-        # it 'should result in the correct text', ->
-        #     chars = (cell.char for cell in @line).join("")
-        #     chars.should.contain "dave[Play/playback_session]"
+        it 'should result in the correct text', ->
+            chars = (cell.char for cell in @line).join("")
+            chars.should.contain "dave[Play/playback_session]"
 
         it 'should have the correct attributes', ->
             attrs = (cell.attrs for cell in @line)

@@ -12,38 +12,38 @@ class Emulator
     echo_char: (char, args) ->
         [@line, @col] = @sb.put(char, @attr, @line, @col)
         
-    bs: (char, args) ->
+    bs: (_char, _args) ->
         @col -= 1
         @normalize_col()
 
-    cr: (char, args) ->
+    cr: (_char, _args) ->
         @col = 1
                 
-    nl: (char, args) ->
+    nl: (_char, _args) ->
         @newline(1)
 
-    ht: (char, args) ->
+    ht: (_char, _args) ->
         @col = 8*(((@col-1)/8) >> 0) + 9
         @normalize_col()
 
-    ich: (char, args) ->
+    ich: (_char, args) ->
         count = args[0] || 1
         @preserve_cursor =>
             (@echo_char(" ", @attr) for i in [1..count])
         @update()
                 
-    cuu: (char, args) ->
+    cuu: (_char, args) ->
         @line -= (args[0] || 1)
         @normalize_line()
         
-    cud: (char, args) ->
+    cud: (_char, args) ->
         @newline(args[0] || 1)
 
-    cuf: (char, args) ->
+    cuf: (_char, args) ->
         @col += (args[0] || 1)
         @normalize_col()
         
-    cub: (char, args) ->
+    cub: (_char, args) ->
         @col -= (args[0] || 1)
         @normalize_col()
         
@@ -56,21 +56,21 @@ class Emulator
         @cuu(char, args)
 
         
-    cha: (char, args) ->
+    cha: (_char, args) ->
         @col = args[0] || @col
         @normalize_col()
 
-    cup: (char, args) ->
+    cup: (_char, args) ->
         @line = args[0] || 1
         @col  = args[1] || 1
         @normalize_line()
         @normalize_col()
         
-    vpa: (char, args) ->
+    vpa: (_char, args) ->
         @line = args[0] || 1
         @normalize_line
         
-    ed:  (char, args) ->
+    ed:  (_char, args) ->
         arg = args[0] || 0
         if arg == 0
             @sb.clear([@line, @col], [@sb.height, @sb.width])
@@ -80,7 +80,7 @@ class Emulator
             @sb.clear([1,1], [@sb.height, @sb.width])
         @update()
             
-    el:  (char, args) ->
+    el:  (_char, args) ->
         arg = args[0] || 0
         if arg == 0
             @sb.clear([@line, @col], [@line, @sb.width])
@@ -90,32 +90,32 @@ class Emulator
             @sb.clear([@line,1], [@line, @sb.width])
         @update()
             
-    il: (char, args) ->
+    il: (_char, args) ->
         count = args[0] || 1
         @sb.insert_lines(@line, count)
         @col = 0
         @update()
                 
-    su:  (char, args) -> console.log("su(#{args})")
-    sd:  (char, args) -> console.log("sd(#{args})")
+    su:  (_char, args) -> console.log("su(#{args})")
+    sd:  (_char, args) -> console.log("sd(#{args})")
 
-    sgr: (char, args) ->
+    sgr: (_char, args) ->
         args = [0] if args.length == 0
         while args.length > 0
             args = @set_graphic_rendition(args)
 
-    decstbm: (char, args) ->
+    decstbm: (_char, args) ->
         @scroll_top    = args[0] || 1
         @scroll_bottom = args[1] || @sb.height
         @sb.set_scroll_region(@scroll_top, @scroll_bottom)
         
-    dsr: (char, args) -> console.log("dsr(#{args})")
-    scp: (char, args) -> console.log("scp(#{args})")
-    rsp: (char, args) -> console.log("rsp(#{args})")
+    dsr: (_char, args) -> console.log("dsr(#{args})")
+    scp: (_char, args) -> console.log("scp(#{args})")
+    rsp: (_char, args) -> console.log("rsp(#{args})")
 
     # private mode
 
-    rm: (char, args) ->
+    rm: (_char, args) ->
         switch args[0]
             when    1 then null   # application cursor keys
             when   12 then null   # blinking cursor
@@ -129,7 +129,7 @@ class Emulator
                                                  
             else console.log("Unsupported rm #{args[0]}")
 
-    sm: (char, args) ->
+    sm: (_char, args) ->
         switch args[0]
             when    1 then null   # application cursor keys
             when   12 then null   # blinking cursor
@@ -149,9 +149,9 @@ class Emulator
         while count > 0
             count -= 1
             @line += 1
-            if @line > @sb.height
+            if @line >= @sb.height
                 @line -= 1
-                @sb.scroll
+                @sb.scroll_up()
         
     preserve_cursor: (func) ->
         [l, c] = [@line, @col]
