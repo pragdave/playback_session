@@ -11,6 +11,9 @@ class Recording
              callback(Recording.add_elapsed(data)))
         .fail((jqxhr, settings, exception) -> console.log(exception))
 
+    @inline: (element, callback) ->
+        callback(Recording.add_elapsed(element.find("script").html()))
+        
     @save: (data, callback) ->
         console.log("saving #{data.recording_name}")
         jQuery.ajax
