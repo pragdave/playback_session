@@ -16,6 +16,10 @@ var Recording;
     });
   };
 
+  Recording.inline = function(element, callback) {
+    return callback(Recording.add_elapsed(element.find("script").html()));
+  };
+
   Recording.save = function(data, callback) {
     console.log("saving " + data.recording_name);
     return jQuery.ajax({
