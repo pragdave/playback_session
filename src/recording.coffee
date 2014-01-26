@@ -12,7 +12,7 @@ class Recording
         .fail((jqxhr, settings, exception) -> console.log(exception))
 
     @inline: (element, callback) ->
-        callback(Recording.add_elapsed(element.find("script").html()))
+        callback(Recording.add_elapsed(JSON.parse(element.find("script").html())))
         
     @save: (data, callback) ->
         console.log("saving #{data.recording_name}")

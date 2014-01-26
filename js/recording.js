@@ -17,7 +17,7 @@ var Recording;
   };
 
   Recording.inline = function(element, callback) {
-    return callback(Recording.add_elapsed(element.find("script").html()));
+    return callback(Recording.add_elapsed(JSON.parse(element.find("script").html())));
   };
 
   Recording.save = function(data, callback) {
