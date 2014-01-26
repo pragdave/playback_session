@@ -1,7 +1,7 @@
 jQuery.fn.extend
   playback_recording: (options) ->
     return @each (_, playback_window) ->
-       playback_window = $(playback_window)
+      playback_window = $(playback_window)
       recording_name = playback_window.data("from")
       Recording.load recording_name, (recording_data) ->
           player = new Player(recording_data, playback_window)
