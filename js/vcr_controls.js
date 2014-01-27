@@ -28,7 +28,9 @@ var VcrControls,
       edit = this.button("EDIT", this.create_editor);
       nav.append(edit);
     }
-    this.progress = $("<progress class=\"vcr-progress\"></progress>");
+    this.progress = $("<div class=\"vcr-progress\"></div>");
+    this.progress_value = $("<div class=\"vcr-progress-value\"></div>");
+    this.progress.append(this.progress_value);
     this.playback_window.append(this.progress);
     this.playback_window.append(nav);
     this.progress.attr("max", this.player.max_time);
@@ -42,8 +44,10 @@ var VcrControls,
       return stop.prop('disabled', true);
     });
     return $(document).on(Player.EV_STEP, function(x) {
+      var percent;
+      percent = 100 * (_this.player.current_time + 1) / _this.player.max_time;
       return _this.progress.animate({
-        value: _this.player.current_time + 1
+        width: "" + percent + "%"
       }, {
         queue: false,
         easing: 'linear',
