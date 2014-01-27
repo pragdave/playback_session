@@ -27,8 +27,8 @@ class VcrControls
                 
             @progress = $("<progress class=\"vcr-progress\"></progress>")
 
-            @playback_window.append nav
             @playback_window.append @progress
+            @playback_window.append nav
             
             @progress.attr("max", @player.max_time)
             @progress.val(@player.current_time + 1)

@@ -87,6 +87,10 @@ h3 {
     letter-spacing: -.3em;
 }
 
+progress.vcr-progress {
+    width: 100%;
+}
+
 .terminal {
     background: #181a26;
     color: white;
