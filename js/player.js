@@ -26,12 +26,6 @@ var Player,
     this.new_emulator();
     this.state = 'idle';
     this.popup_div = $("<div class=\"popup\"></div>");
-    this.popup_div.dialog({
-      show: 600,
-      hide: 600,
-      autoOpen: false,
-      modal: false
-    });
   }
 
   Player.prototype.play = function(factor, end_position) {
@@ -139,11 +133,13 @@ var Player,
   Player.prototype.handle_popup = function(popup) {
     this.popup_div.html(markdown.toHTML(popup));
     this.popup_div.closest(".ui-dialog").find(".ui-dialog-titlebar").hide();
-    return this.popup_div.dialog("open");
+    return this.popup_div.bPopup({
+      modal: false
+    });
   };
 
   Player.prototype.handle_popdown = function(popup) {
-    return this.popup_div.dialog("close");
+    return this.popup_div.bPopup().close();
   };
 
   Player.prototype.change_state = function(new_state) {
