@@ -43,7 +43,7 @@ var VcrControls,
     });
     return $(document).on(Player.EV_STEP, function(x) {
       return _this.progress.animate({
-        val: _this.player.current_time + 1
+        value: _this.player.current_time + 1
       }, {
         queue: false,
         easing: 'linear',
