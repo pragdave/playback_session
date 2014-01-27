@@ -68,18 +68,11 @@ h3 {
     background: grey;
 }
 
-.vcr-progress {
-    position: relative;
+.reveal nav.vcr-buttons {
+
 }
 
-.vcr-buttons {
-    position: absolute;
-    top: 0.3em;
-    left: 0.5em;
-    height: 100%;
-}
-
-.vcr-buttons input {
+.reveal nav.vcr-buttons input {
     display: inline-block;
     font-size: 60% !important;
     font-weight: bold;
@@ -90,7 +83,7 @@ h3 {
     background: aliceblue;
 }
 
-.vcr-buttons input.compress {
+.reveal nav.vcr-buttons input.compress {
     letter-spacing: -.3em;
 }
 
@@ -112,7 +105,8 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#466e70', end
 
 }
 
-.terminal pre {
+.reveal pre.terminal, .reveal pre.terminal pre {
+    display: block;
     margin: 0px;
     padding: 0px 8px;
     background: #181a26;
@@ -120,28 +114,14 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#466e70', end
     line-height: 125% !important;
     border: none;
     border-radius: 0px;
+    position: relative;
+    width: 100%;
+    text-align: left;
+    font-family: monospace;
+    word-wrap: none;
+    box-shadow: none;
 }
 
-pre.terminal:before, pre.terminal pre:before {
-    content: "";
-    bottom: 0px !important;
-    width: 0% !important;
-    height: 0% !important;
-    max-width: 0px !important;
-    box-shadow: none !important;
-    left: 0px !important;
-}
-pre.terminal:after, pre.terminal pre:after {
-    content: "";
-    position: absolute;
-    z-index: -2;
-    bottom: 0px  !important;
-    width: 0% !important;
-    height: 0% !important;
-    max-width: 0px !important;
-    box-shadow: none !important;    
-    right: 0px !important;
-}
 
 .terminal pre .b_ { 
     font-weight: bold;

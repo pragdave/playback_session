@@ -44,7 +44,7 @@ class VcrControls
             $(document).on(Player.EV_STEP, (x) =>
                 @progress
                 .animate(
-                    val: @player.current_time+1
+                    value: @player.current_time+1
                   ,
                     queue: false
                     easing: 'linear'
