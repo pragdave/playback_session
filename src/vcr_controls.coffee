@@ -5,8 +5,8 @@ class VcrControls
             @add_controls()
 
         add_controls: ->
-            rewind = @button("↩", @player.rewind)
-            stop   = @button("||",  @player.pause)
+            rewind = @button("↩",   @player.rewind)
+            stop   = @button("||",   @player.pause)
             slow   = @button("½ ▶",  @player.play, 2)
             play   = @button("▶",    @player.play, 1)
             fast1  = @button("▶▶",   @player.play, 0.5,  "compress")
@@ -30,7 +30,7 @@ class VcrControls
             @playback_window.append nav
             @playback_window.append @progress
             
-            @progress.attr("max", max_time)
+            @progress.attr("max", @player.max_time)
             @progress.val(@player.current_time + 1)
 
             $(document).on(Player.EV_PLAYING, ->

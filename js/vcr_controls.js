@@ -31,7 +31,7 @@ var VcrControls,
     this.progress = $("<progress class=\"vcr-progress\"></progress>");
     this.playback_window.append(nav);
     this.playback_window.append(this.progress);
-    this.progress.attr("max", max_time);
+    this.progress.attr("max", this.player.max_time);
     this.progress.val(this.player.current_time + 1);
     $(document).on(Player.EV_PLAYING, function() {
       rewind.prop('disabled', false);
