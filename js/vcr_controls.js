@@ -10,7 +10,7 @@ var VcrControls,
   }
 
   VcrControls.prototype.add_controls = function() {
-    var edit, fast1, fast2, fast3, nav, play, progress, rewind, slow, step, stop,
+    var edit, fast1, fast2, fast3, nav, play, rewind, slow, step, stop,
       _this = this;
     rewind = this.button("↩", this.player.rewind);
     stop = this.button("||", this.player.pause);
@@ -28,13 +28,11 @@ var VcrControls,
       edit = this.button("EDIT", this.create_editor);
       nav.append(edit);
     }
-    progress = $("<div class=\"vcr-progress\"></div>");
-    progress.append(nav);
-    this.playback_window.append(progress);
-    progress.progressbar({
-      value: this.player.current_time + 1,
-      max: this.player.max_time
-    });
+    this.progress = $("<progress class=\"vcr-progress\"></progress>");
+    this.playback_window.append(nav);
+    this.playback_window.append(this.progress);
+    this.progress.attr("max", max_time);
+    this.progress.val(this.player.current_time + 1);
     $(document).on(Player.EV_PLAYING, function() {
       rewind.prop('disabled', false);
       return stop.prop('disabled', false);
@@ -44,10 +42,8 @@ var VcrControls,
       return stop.prop('disabled', true);
     });
     return $(document).on(Player.EV_STEP, function(x) {
-      var percent;
-      percent = 100.0 * _this.player.current_time / _this.player.max_time;
-      return progress.find(".ui-progressbar-value").animate({
-        width: "" + percent + "%"
+      return _this.progress.animate({
+        val: _this.player.current_time + 1
       }, {
         queue: false,
         easing: 'linear',

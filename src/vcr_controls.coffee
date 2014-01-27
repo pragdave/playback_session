@@ -25,14 +25,13 @@ class VcrControls
                 edit   = @button("EDIT",   @create_editor)
                 nav.append edit
                 
-            progress = $("<div class=\"vcr-progress\"></div>")
-            progress.append nav
+            @progress = $("<progress class=\"vcr-progress\"></progress>")
+
+            @playback_window.append nav
+            @playback_window.append @progress
             
-            @playback_window.append progress
-            
-            progress.progressbar
-                value: @player.current_time + 1
-                max: @player.max_time
+            @progress.attr("max", max_time)
+            @progress.val(@player.current_time + 1)
 
             $(document).on(Player.EV_PLAYING, ->
                 rewind.prop('disabled', false)
@@ -43,11 +42,9 @@ class VcrControls
                 stop.prop('disabled', true))
             
             $(document).on(Player.EV_STEP, (x) =>
-                percent = 100.0*@player.current_time / @player.max_time
-                progress
-                .find(".ui-progressbar-value")
+                @progress
                 .animate(
-                    width: "#{percent}%"
+                    val: @player.current_time+1
                   ,
                     queue: false
                     easing: 'linear'
