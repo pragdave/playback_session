@@ -46,7 +46,7 @@ var VcrControls,
     return $(document).on(Player.EV_STEP, function(x) {
       var percent;
       percent = 100 * (_this.player.current_time + 1) / _this.player.max_time;
-      return _this.progress.animate({
+      return _this.progress_value.animate({
         width: "" + percent + "%"
       }, {
         queue: false,

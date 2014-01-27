@@ -44,7 +44,7 @@ class VcrControls
             
             $(document).on(Player.EV_STEP, (x) =>
                 percent = 100*(@player.current_time+1)/@player.max_time
-                @progress
+                @progress_value
                 .animate(
                     width: "#{percent}%"
                   ,
