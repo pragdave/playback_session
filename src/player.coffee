@@ -47,6 +47,8 @@ class Player
         data = @stream[@playhead]
 
         switch data.t
+            when "snapshot"
+                @load_from(data.val)
             when "op"
                 @fsm.accept_string(data.val)
             when "popup"
@@ -107,5 +109,26 @@ class Player
             @state = new_state
             $(document).triggerHandler
                 type: Player.event_name(new_state)
-        
+
+    # serialization of all state
+
+    load_from: (state) ->
+        @sb.load_from(state.sb_dump)
+        @fsm.load_from(state.fsm_dump)
+        @emulator.load_from(state.emulator_dump)
+        #
+        @state    = state.player.state
+        @playhead = state.player.playhead
+        @current_time = state.player.current_time
+            
+    save_state: ->
+        state = 
+            sb_dump:       @sb.save(),
+            fsm_dump:      @fsm.save(),
+            emulator_dump: @emulator.save(),
+            #
+            player:
+                state:        @state,
+                playhead:     @playhead,
+                current_time: @current_time
             

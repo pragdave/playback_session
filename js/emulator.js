@@ -13,6 +13,24 @@ var Emulator,
     this.attr = new ScreenBuffer.Attrs();
   }
 
+  Emulator.prototype.save = function() {
+    return {
+      primary_cursor: this.primary_cursor.slice(0),
+      alternate_cursor: this.alternate_cursor.slice(0),
+      line: this.line,
+      col: this.col,
+      attr: this.attr
+    };
+  };
+
+  Emulator.prototype.load_from = function(state) {
+    this.line = state.line;
+    this.col = state.col;
+    this.primary_cursor = state.primary_cursor;
+    this.alternate_cursor = state.alternate_cursor;
+    return this.attr = state.attr;
+  };
+
   Emulator.prototype.update = function() {
     return this.html.update();
   };
@@ -266,10 +284,8 @@ var Emulator,
 
   Emulator.prototype.use_alternate_cursor = function() {
     var _ref;
-    console.log([this.line, this.col]);
     this.primary_cursor = [this.line, this.col];
-    _ref = this.alternate_cursor, this.line = _ref[0], this.col = _ref[1];
-    return console.log([this.line, this.col]);
+    return _ref = this.alternate_cursor, this.line = _ref[0], this.col = _ref[1], _ref;
   };
 
   Emulator.prototype.use_primary_cursor = function() {

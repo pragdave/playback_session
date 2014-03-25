@@ -5,7 +5,21 @@ class Emulator
       @alternate_cursor = [1, 1]
       @use_primary_cursor()
       @attr = new ScreenBuffer.Attrs()
-      
+
+    save: ->
+        primary_cursor:   @primary_cursor.slice(0)  # force new copy
+        alternate_cursor: @alternate_cursor.slice(0)
+        line:             @line
+        col:              @col
+        attr:             @attr
+
+    load_from: (state) ->
+        @line = state.line
+        @col  = state.col
+        @primary_cursor = state.primary_cursor
+        @alternate_cursor = state.alternate_cursor
+        @attr = state.attr
+
     update: ->
         @html.update()
         
@@ -175,10 +189,8 @@ class Emulator
         @update()
 
     use_alternate_cursor: ->
-        console.log([@line, @col])
         @primary_cursor = [ @line, @col ]
         [ @line, @col ] = @alternate_cursor
-        console.log([@line, @col])
         
     use_primary_cursor: ->
         @alternate_cursor = [ @line, @col ]
@@ -214,3 +226,6 @@ class Emulator
                     else console.log("Unknown sgr #{arg}")
         args
 
+
+
+        

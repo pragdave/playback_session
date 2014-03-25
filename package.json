@@ -1,6 +1,6 @@
 {
   "name": "playback_session",
-  "version": "0.0.0",
+  "version": "0.0.0a",
   "description": "Playback the recording of a terminal session into a DOM element",
   "directories": {
     "test": "test"

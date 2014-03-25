@@ -1,4 +1,5 @@
-var AnsiFSM;
+var AnsiFSM,
+  __hasProp = {}.hasOwnProperty;
 
 (typeof exports !== "undefined" && exports !== null ? exports : window).AnsiFSM = AnsiFSM = (function() {
   AnsiFSM.prototype.states = {
@@ -123,6 +124,45 @@ var AnsiFSM;
 
   AnsiFSM.prototype.punhandled = function(char) {
     return console.log("Unhandled PRIVATE CSI " + (this.args.join(';')) + " " + char);
+  };
+
+  AnsiFSM.prototype.save = function() {
+    var arg, current_state, state, value;
+    current_state = (function() {
+      var _ref, _results;
+      _ref = this.states;
+      _results = [];
+      for (state in _ref) {
+        if (!__hasProp.call(_ref, state)) continue;
+        value = _ref[state];
+        if (value === this.state) {
+          _results.push(state);
+        }
+      }
+      return _results;
+    }).call(this);
+    return {
+      state: current_state[0],
+      args: (function() {
+        var _i, _len, _ref, _results;
+        if ($.isArray(this.args)) {
+          _ref = this.args;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            arg = _ref[_i];
+            _results.push(arg);
+          }
+          return _results;
+        } else {
+          return this.args;
+        }
+      }).call(this)
+    };
+  };
+
+  AnsiFSM.prototype.load_from = function(state) {
+    this.state = this.states[state.state];
+    return this.args = state.args;
   };
 
   return AnsiFSM;

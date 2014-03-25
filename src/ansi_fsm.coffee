@@ -108,3 +108,16 @@ class AnsiFSM
 
     punhandled: (char) ->
             console.log "Unhandled PRIVATE CSI #{@args.join(';')} #{char}"
+
+
+    save: ->
+        current_state = (state for own state, value of @states when value is @state)
+        state: current_state[0]
+        args:  if $.isArray(@args)
+                 arg for arg in @args
+               else
+                 @args
+
+    load_from: (state) ->
+        @state = @states[state.state]   # ah, the power of good names
+        @args  = state.args

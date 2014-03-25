@@ -52,8 +52,8 @@ describe 'ScreenBuffer', ->
             @sb.lines[0][1].char.should.equal "B"
             @sb.lines[0][2].char.should.equal "C"
 
-        it 'should not the cursor to the next line if we fill the current', ->
-            @sb.put("ABCD", @dc.attrs, 1, 1).should.eql [1, 4]
+        it 'should move the cursor to the next line if we fill the current', ->
+            @sb.put("ABCD", @dc.attrs, 1, 1).should.eql [2, 1]
             @sb.lines[0][0].char.should.equal "A"
             @sb.lines[0][1].char.should.equal "B"
             @sb.lines[0][2].char.should.equal "C"
@@ -65,21 +65,21 @@ describe 'ScreenBuffer', ->
             @sb.lines[1][2].char.should.equal "B"
 
         it 'should wrap to the next line', ->
-            @sb.put("ABCD", @dc.attrs, 2, 2).should.eql [2, 4]
+            @sb.put("ABCD", @dc.attrs, 2, 2).should.eql [3, 2]
             @sb.lines[1][1].char.should.equal "A"
             @sb.lines[1][2].char.should.equal "B"
-            @sb.lines[1][3].char.should.equal "D"
+            @sb.lines[1][3].char.should.equal "C"
 
         it 'should set the dirty flag on all modified lines', ->
-            @sb.put("ABCD", @dc.attrs, 2, 2).should.eql [2, 4]
+            @sb.put("ABCD", @dc.attrs, 2, 2).should.eql [3, 2]
             @sb.dirty(1).should.equal false
             @sb.dirty(2).should.equal true
-            @sb.dirty(3).should.equal false
+            @sb.dirty(3).should.equal true
 
-        it 'should not scroll if we write to the last position on the screen', ->
-            @sb.put("X", @dc.attrs, HEIGHT, WIDTH).should.eql [HEIGHT, WIDTH]
-            @sb.lines[i][0].char.should.equal li(i) for i in [0..HEIGHT-2]
-            @sb.lines[HEIGHT-1][WIDTH-1].char.should.equal "X"
+        # it 'should not scroll if we write to the last position on the screen', ->
+        #     @sb.put("X", @dc.attrs, HEIGHT, WIDTH).should.eql [HEIGHT, WIDTH]
+        #     @sb.lines[i][0].char.should.equal li(i) for i in [0..HEIGHT-2]
+        #     @sb.lines[HEIGHT-1][WIDTH-1].char.should.equal "X"
 
 
         # it 'should scroll if we write to the last position of the scroll region', ->

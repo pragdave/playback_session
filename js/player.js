@@ -70,6 +70,9 @@ var Player,
     var data;
     data = this.stream[this.playhead];
     switch (data.t) {
+      case "snapshot":
+        this.load_from(data.val);
+        break;
       case "op":
         this.fsm.accept_string(data.val);
         break;
@@ -149,6 +152,29 @@ var Player,
         type: Player.event_name(new_state)
       });
     }
+  };
+
+  Player.prototype.load_from = function(state) {
+    this.sb.load_from(state.sb_dump);
+    this.fsm.load_from(state.fsm_dump);
+    this.emulator.load_from(state.emulator_dump);
+    this.state = state.player.state;
+    this.playhead = state.player.playhead;
+    return this.current_time = state.player.current_time;
+  };
+
+  Player.prototype.save_state = function() {
+    var state;
+    return state = {
+      sb_dump: this.sb.save(),
+      fsm_dump: this.fsm.save(),
+      emulator_dump: this.emulator.save(),
+      player: {
+        state: this.state,
+        playhead: this.playhead,
+        current_time: this.current_time
+      }
+    };
   };
 
   return Player;

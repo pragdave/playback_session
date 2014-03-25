@@ -271,6 +271,51 @@ var ScreenBuffer,
     return _results;
   };
 
+  ScreenBuffer.prototype.save = function() {
+    return {
+      scroll_top: this.scroll_top,
+      scroll_bottom: this.scroll_bottom,
+      primary: this.clone_buffer(this.primary),
+      alternate: this.clone_buffer(this.alternate),
+      use_primary: this.lines === this.primary
+    };
+  };
+
+  ScreenBuffer.prototype.load_from = function(state) {
+    this.scroll_top = state.scroll_top;
+    this.scroll_bottom = state.scroll_bottom;
+    this.primary = state.primary;
+    this.alternate = state.alternate;
+    return this.lines = state.use_primary ? this.primary : this.alternate;
+  };
+
+  ScreenBuffer.prototype.clone_buffer = function(buffer) {
+    var line, _i, _len, _results;
+    _results = [];
+    for (_i = 0, _len = buffer.length; _i < _len; _i++) {
+      line = buffer[_i];
+      _results.push(this.clone_line(line));
+    }
+    return _results;
+  };
+
+  ScreenBuffer.prototype.clone_line = function(line) {
+    var cell, _i, _len, _results;
+    _results = [];
+    for (_i = 0, _len = line.length; _i < _len; _i++) {
+      cell = line[_i];
+      _results.push(this.clone_cell(cell));
+    }
+    return _results;
+  };
+
+  ScreenBuffer.prototype.clone_cell = function(cell) {
+    var c;
+    c = new Cell(cell.char);
+    c.attrs.update_from(cell.attrs);
+    return c;
+  };
+
   return ScreenBuffer;
 
 })();
