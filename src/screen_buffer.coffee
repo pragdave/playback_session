@@ -38,12 +38,29 @@ class ScreenBuffer
             return true if mine == hers
 #            console.log("Attribute mismatch: #{attr} -> #{mine} vs. #{hers}")
             false
+
+        save: ->
+            [ @fg, @bg, @bold, @ul, @inverse ]
+
+        @load_from: (attrs) ->
+            new Attrs().load_from(attrs)
+
+        load_from: ([ @fg, @bg, @bold, @ul, @inverse ]) ->
+            @
         
     ############################################################
 
     @Cell: class Cell
         constructor: (@char = " ") ->
             @attrs = new Attrs()
+
+        save: ->
+            [ @char, @attrs.save() ]
+
+        @load_from = ([char, attrs]) ->
+            cell = new Cell(char)
+            cell.attrs = Attrs.load_from(attrs)
+            cell
 
     ############################################################
 
@@ -166,18 +183,20 @@ class ScreenBuffer
     load_from: (state) ->
         @scroll_top = state.scroll_top
         @scroll_bottom = state.scroll_bottom
-        @primary = state.primary
-        @alternate = state.alternate
+        @primary   = @load_buffer(state.primary)
+        @alternate = @load_buffer(state.alternate)
         @lines = if state.use_primary then @primary else @alternate
 
     clone_buffer: (buffer) ->
         @clone_line(line) for line in buffer
 
     clone_line: (line) ->
-        @clone_cell(cell) for cell in line
+        cell.save() for cell in line
 
-    clone_cell: (cell) ->
-        c = new Cell(cell.char)
-        c.attrs.update_from(cell.attrs)
-        c
+    load_buffer: (buffer) ->
+        @load_line(line) for line in buffer
+
+    load_line: (line) ->
+        Cell.load_from(cell) for cell in line
+
         

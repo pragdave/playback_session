@@ -43,6 +43,19 @@ var ScreenBuffer,
       return false;
     };
 
+    Attrs.prototype.save = function() {
+      return [this.fg, this.bg, this.bold, this.ul, this.inverse];
+    };
+
+    Attrs.load_from = function(attrs) {
+      return new Attrs().load_from(attrs);
+    };
+
+    Attrs.prototype.load_from = function(_arg) {
+      this.fg = _arg[0], this.bg = _arg[1], this.bold = _arg[2], this.ul = _arg[3], this.inverse = _arg[4];
+      return this;
+    };
+
     return Attrs;
 
   })();
@@ -52,6 +65,18 @@ var ScreenBuffer,
       this.char = char != null ? char : " ";
       this.attrs = new Attrs();
     }
+
+    Cell.prototype.save = function() {
+      return [this.char, this.attrs.save()];
+    };
+
+    Cell.load_from = function(_arg) {
+      var attrs, cell, char;
+      char = _arg[0], attrs = _arg[1];
+      cell = new Cell(char);
+      cell.attrs = Attrs.load_from(attrs);
+      return cell;
+    };
 
     return Cell;
 
@@ -285,8 +310,8 @@ var ScreenBuffer,
   ScreenBuffer.prototype.load_from = function(state) {
     this.scroll_top = state.scroll_top;
     this.scroll_bottom = state.scroll_bottom;
-    this.primary = state.primary;
-    this.alternate = state.alternate;
+    this.primary = this.load_buffer(state.primary);
+    this.alternate = this.load_buffer(state.alternate);
     return this.lines = state.use_primary ? this.primary : this.alternate;
   };
 
@@ -305,16 +330,29 @@ var ScreenBuffer,
     _results = [];
     for (_i = 0, _len = line.length; _i < _len; _i++) {
       cell = line[_i];
-      _results.push(this.clone_cell(cell));
+      _results.push(cell.save());
     }
     return _results;
   };
 
-  ScreenBuffer.prototype.clone_cell = function(cell) {
-    var c;
-    c = new Cell(cell.char);
-    c.attrs.update_from(cell.attrs);
-    return c;
+  ScreenBuffer.prototype.load_buffer = function(buffer) {
+    var line, _i, _len, _results;
+    _results = [];
+    for (_i = 0, _len = buffer.length; _i < _len; _i++) {
+      line = buffer[_i];
+      _results.push(this.load_line(line));
+    }
+    return _results;
+  };
+
+  ScreenBuffer.prototype.load_line = function(line) {
+    var cell, _i, _len, _results;
+    _results = [];
+    for (_i = 0, _len = line.length; _i < _len; _i++) {
+      cell = line[_i];
+      _results.push(Cell.load_from(cell));
+    }
+    return _results;
   };
 
   return ScreenBuffer;
