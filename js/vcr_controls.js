@@ -10,8 +10,7 @@ var VcrControls,
   }
 
   VcrControls.prototype.add_controls = function() {
-    var edit, fast1, fast2, fast3, nav, play, rewind, slow, step, stop,
-      _this = this;
+    var edit, fast1, fast2, fast3, nav, play, rewind, slow, step, stop;
     rewind = this.button("↩", this.player.rewind);
     stop = this.button("||", this.player.pause);
     slow = this.button("½ ▶", this.player.play, 2);
@@ -43,17 +42,19 @@ var VcrControls,
       play.prop('disabled', false);
       return stop.prop('disabled', true);
     });
-    return $(document).on(Player.EV_STEP, function(x) {
-      var percent;
-      percent = 100 * (_this.player.current_time + 1) / _this.player.max_time;
-      return _this.progress_value.animate({
-        width: "" + percent + "%"
-      }, {
-        queue: false,
-        easing: 'linear',
-        duration: 500
-      });
-    });
+    return $(document).on(Player.EV_STEP, (function(_this) {
+      return function(x) {
+        var percent;
+        percent = 100 * (_this.player.current_time + 1) / _this.player.max_time;
+        return _this.progress_value.animate({
+          width: "" + percent + "%"
+        }, {
+          queue: false,
+          easing: 'linear',
+          duration: 500
+        });
+      };
+    })(this));
   };
 
   VcrControls.prototype.create_editor = function() {
@@ -61,14 +62,15 @@ var VcrControls,
   };
 
   VcrControls.prototype.button = function(label, on_click, arg, klass) {
-    var _this = this;
     if (klass) {
       klass = " class=\"" + klass + "\"";
     }
-    return $("<input type=\"button\" value=\"" + label + "\"" + klass + "/>").on("click", function(e) {
-      e.preventDefault();
-      return on_click(arg);
-    });
+    return $("<input type=\"button\" value=\"" + label + "\"" + klass + "/>").on("click", (function(_this) {
+      return function(e) {
+        e.preventDefault();
+        return on_click(arg);
+      };
+    })(this));
   };
 
   return VcrControls;

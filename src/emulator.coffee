@@ -119,9 +119,12 @@ class Emulator
             args = @set_graphic_rendition(args)
 
     decstbm: (_char, args) ->
+        console.log "Set scroll region"
+        console.dir(args)
         @scroll_top    = args[0] || 1
         @scroll_bottom = args[1] || @sb.height
         @sb.set_scroll_region(@scroll_top, @scroll_bottom)
+        @cup(" ", [1,1])  # set scrolling region also homes cursor
         
     dsr: (_char, args) -> console.log("dsr(#{args})")
     scp: (_char, args) -> console.log("scp(#{args})")
@@ -162,11 +165,13 @@ class Emulator
     newline: (count) ->
         while count > 0
             count -= 1
-            @line += 1
-            if @line >= @sb.height
-                @line -= 1
+            if @line == @sb.scroll_bottom
                 @sb.scroll_up()
-        
+            else if @line >= @sb.scroll_top && @line < @sb.scroll_bottom
+                @line += 1
+            else
+                # ??
+                
     preserve_cursor: (func) ->
         [l, c] = [@line, @col]
         func()

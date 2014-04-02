@@ -5,13 +5,12 @@ var HtmlViewer,
   HtmlViewer.prototype.EMPTY_ATTR = new ScreenBuffer.Attrs;
 
   function HtmlViewer(playback_window, screen_buffer) {
-    var and_then, char, line,
-      _this = this;
+    var and_then, char, line;
     this.playback_window = playback_window;
     this.screen_buffer = screen_buffer;
     this.update_line = __bind(this.update_line, this);
     this.dom = $("<pre class=\"terminal\"></pre>");
-    char = $('<pre><span id="wibble">M</span></pre>');
+    char = $('<pre><span id="wibble" style="display: table-cell; background: red">MMMMMMMMMM</span></pre>');
     this.lines = (function() {
       var _i, _ref, _results;
       _results = [];
@@ -20,16 +19,18 @@ var HtmlViewer,
       }
       return _results;
     }).call(this);
-    this.dom.append(this.lines);
     this.dom.append(char);
+    this.dom.append(this.lines);
     this.playback_window.prepend(this.dom);
-    and_then = function() {
-      var width;
-      width = $("#wibble").width();
-      _this.playback_window.css('width', (width * _this.screen_buffer.width + 48) + 'px');
-      char.remove();
-      return _this.update();
-    };
+    and_then = (function(_this) {
+      return function() {
+        var width;
+        width = $("#wibble").width();
+        _this.playback_window.css('width', ((width / 10) * _this.screen_buffer.width + 48) + 'px');
+        char.remove();
+        return _this.update();
+      };
+    })(this);
     setTimeout(and_then, 0);
   }
 
@@ -83,7 +84,9 @@ var HtmlViewer,
     }
     _ref = to.inverse ? [to.bg, to.fg] : [to.fg, to.bg], f = _ref[0], b = _ref[1];
     css_attrs.push("f" + f + "_");
-    css_attrs.push("b" + b + "_");
+    if (b !== 0) {
+      css_attrs.push("b" + b + "_");
+    }
     return result.push("<span class=\"" + (css_attrs.join(' ')) + "\">");
   };
 

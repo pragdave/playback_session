@@ -47,7 +47,7 @@ class ScreenBuffer
 
     ############################################################
 
-    constructor: ([@height, @width]) ->
+    constructor: ({lines: @height, columns: @width}) ->
         @scroll_top    = 1
         @scroll_bottom = @height
         
@@ -62,24 +62,30 @@ class ScreenBuffer
     put: (chars, attr, line, col) ->
         line -= 1
         col  -= 1
-
-        if line >= @scroll_bottom
-            line = @scroll_bottom - 1
-            @scroll_up()
-
         for i in [0...chars.length]
             cell = @lines[line][col]
             cell.char = chars.charAt(i)
             cell.attrs.update_from(attr)
-        
             @dirty_lines[line] = true
-            col += 1
-            if col >= @width
-                col = @width - 1
-                col =  0
-                line += 1
+            [ line, col ] = @cursor_forward_from(line, col)
 
         [ line+1, col+1 ]
+
+    cursor_forward_from: (line, col) ->
+        col += 1
+
+        if col >= @width
+            console.dir([line, col])
+            # if line + 1 >= @SCROLL_TOP && line + 1 <= @SCROLL_BOTTOM
+            #     col = 0
+            #     line += 1
+            #     if line + 1 >= @SCROLL_BOTTOM
+            #         line -= 1
+            #         @scroll_up()
+            # else
+            col = @width - 1
+    
+        [ line, col ]
 
     dirty: (line) ->
         @dirty_lines[line-1]

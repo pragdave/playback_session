@@ -29,7 +29,6 @@ var Player,
   }
 
   Player.prototype.play = function(factor, end_position) {
-    var _this = this;
     if (factor == null) {
       factor = -1;
     }
@@ -47,16 +46,24 @@ var Player,
       return n + 1;
     }, function(n) {
       return n;
-    }, function(n) {
-      return factor * _this.stream[n].d;
-    });
-    return this.playback = this.source.subscribe(function(n) {
-      return _this.step();
-    }, function(err) {
-      return console.log('Error: ' + err);
-    }, function() {
-      return _this.finish_play();
-    });
+    }, (function(_this) {
+      return function(n) {
+        return factor * _this.stream[n].d;
+      };
+    })(this));
+    return this.playback = this.source.subscribe((function(_this) {
+      return function(n) {
+        return _this.step();
+      };
+    })(this), (function(_this) {
+      return function(err) {
+        return console.log('Error: ' + err);
+      };
+    })(this), (function(_this) {
+      return function() {
+        return _this.finish_play();
+      };
+    })(this));
   };
 
   Player.prototype.pause = function() {
@@ -102,12 +109,40 @@ var Player,
     this.new_emulator();
     this.emulator.update();
     if (position > 0) {
-      if (position > 0) {
-        return this.fast_forward(0, position);
-      }
+      return this.move_to(position);
     } else {
       return this.trigger_update();
     }
+  };
+
+  Player.prototype.move_to = function(position) {
+    var finish, _results;
+    if (position === this.playhead) {
+      return;
+    }
+    if (position < this.playhead) {
+      this.playhead = 0;
+    }
+    this.playhead = this.find_last_snapshot_between(this.playhead, position);
+    finish = position;
+    this.current_time = this.stream[this.playhead].elapsed;
+    if (position === 0) {
+      this.sb.clear_all();
+      this.new_emulator();
+      this.emulator.update();
+    }
+    _results = [];
+    while (this.playhead <= finish) {
+      _results.push(this.step());
+    }
+    return _results;
+  };
+
+  Player.prototype.find_last_snapshot_between = function(start, finish) {
+    while (finish > start && this.stream[finish].t !== "snapshot") {
+      finish -= 1;
+    }
+    return finish;
   };
 
   Player.prototype.data_updated = function(to_row) {
@@ -160,7 +195,9 @@ var Player,
     this.emulator.load_from(state.emulator_dump);
     this.state = state.player.state;
     this.playhead = state.player.playhead;
-    return this.current_time = state.player.current_time;
+    this.current_time = state.player.current_time;
+    this.emulator.update();
+    return this.trigger_update();
   };
 
   Player.prototype.save_state = function() {

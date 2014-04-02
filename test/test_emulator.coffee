@@ -22,7 +22,7 @@ describe 'Emulator', ->
             prepend: (dom) ->
             css:     (_) ->
 
-        @sb     = new ScreenBuffer([10, 10])
+        @sb     = new ScreenBuffer lines:10, columns: 10
         @html   = new HtmlViewer(mock_dom, @sb)
         @emu    = new Emulator(mock_dom, @sb, @html)
         @dc     = new ScreenBuffer.Cell

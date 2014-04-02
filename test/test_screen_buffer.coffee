@@ -10,14 +10,18 @@ BOTTOM = 6
 
 li = (i) -> 100+i
 
+    
 
 describe 'ScreenBuffer', ->
     beforeEach ->
-        @sb = new ScreenBuffer([HEIGHT, WIDTH])
+        @sb = new ScreenBuffer lines: HEIGHT, columns: WIDTH
         @dc = new ScreenBuffer.Cell
         @lines = @sb.lines
         @range = [0...HEIGHT]
         (@lines[i][0].char = li(i)) for i in @range
+        @check_default_cells = ->
+            (@sb.lines[i][0].char.should.equal li(i)) for i in @range
+            @sb.lines[2][3].should.eql  @dc
         
             
     describe 'constructor', ->
@@ -32,9 +36,7 @@ describe 'ScreenBuffer', ->
             @sb.lines[i].should.have.length(WIDTH) for i in @range
 
         it 'should have lines containing default cells', ->
-            (@sb.lines[i][0].char.should.equal li(i)) for i in @range
-            @sb.lines[2][3].should.eql  @dc
-    
+            @check_default_cells()
 
     describe 'put', ->
         it 'should add a single character and update the cursor', ->
@@ -53,7 +55,7 @@ describe 'ScreenBuffer', ->
             @sb.lines[0][2].char.should.equal "C"
 
         it 'should move the cursor to the next line if we fill the current', ->
-            @sb.put("ABCD", @dc.attrs, 1, 1).should.eql [2, 1]
+            @sb.put("ABCD", @dc.attrs, 1, 1).should.eql [1,4]
             @sb.lines[0][0].char.should.equal "A"
             @sb.lines[0][1].char.should.equal "B"
             @sb.lines[0][2].char.should.equal "C"
@@ -64,33 +66,30 @@ describe 'ScreenBuffer', ->
             @sb.lines[1][1].char.should.equal "A"
             @sb.lines[1][2].char.should.equal "B"
 
-        it 'should wrap to the next line', ->
-            @sb.put("ABCD", @dc.attrs, 2, 2).should.eql [3, 2]
+        it 'should not wrap to the next line', ->
+            @sb.put("ABCD", @dc.attrs, 2, 2).should.eql [2, 4]
             @sb.lines[1][1].char.should.equal "A"
             @sb.lines[1][2].char.should.equal "B"
-            @sb.lines[1][3].char.should.equal "C"
+            @sb.lines[1][3].char.should.equal "D"
 
         it 'should set the dirty flag on all modified lines', ->
-            @sb.put("ABCD", @dc.attrs, 2, 2).should.eql [3, 2]
+            @sb.put("ABCD", @dc.attrs, 2, 2).should.eql [2, 4]
             @sb.dirty(1).should.equal false
             @sb.dirty(2).should.equal true
-            @sb.dirty(3).should.equal true
+            @sb.dirty(3).should.equal false
 
-        # it 'should not scroll if we write to the last position on the screen', ->
-        #     @sb.put("X", @dc.attrs, HEIGHT, WIDTH).should.eql [HEIGHT, WIDTH]
-        #     @sb.lines[i][0].char.should.equal li(i) for i in [0..HEIGHT-2]
-        #     @sb.lines[HEIGHT-1][WIDTH-1].char.should.equal "X"
+        it 'should not scroll if we write to the last position on the screen', ->
+            @sb.put("X", @dc.attrs, HEIGHT, WIDTH).should.eql [HEIGHT, WIDTH]
+            @sb.lines[i][0].char.should.equal li(i) for i in [0..HEIGHT-2]
+            @sb.lines[HEIGHT-1][WIDTH-1].char.should.equal "X"
 
 
-        # it 'should scroll if we write to the last position of the scroll region', ->
-        #     @sb.set_scroll_region(TOP, BOTTOM)
-        #     @sb.put("X", @dc.attrs, BOTTOM, WIDTH).should.eql [BOTTOM, 1]
-        #     @sb.lines[i][0].char.should.equal li(i) for i in [0..TOP-2]
-        #     @sb.lines[i][0].char.should.equal li(i+1) for i in [TOP-1...BOTTOM-1]
-        #     @sb.lines[BOTTOM-2][WIDTH-1].char.should.equal "X"
-        #     @sb.lines[BOTTOM-1][0].should.eql @dc
-        #     @sb.lines[i][0].char.should.equal li(i) for i in [BOTTOM...HEIGHT]
-
+        it 'should not scroll if we write to the last position of the scroll region', ->
+            @sb.set_scroll_region(TOP, BOTTOM)
+            @sb.put("X", @dc.attrs, BOTTOM, WIDTH).should.eql [BOTTOM, WIDTH]
+            @sb.lines[i][0].char.should.equal li(i) for i in [0...HEIGHT]
+            @sb.lines[BOTTOM-1][WIDTH-1].char.should.equal "X"
+    
     describe 'scroll_up', ->
         describe 'with no scroll region', ->
             beforeEach ->

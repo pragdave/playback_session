@@ -4,7 +4,7 @@ describe 'save state', ->
 
     beforeEach ->
         @mock_recording = {}
-        @mock_recording.size = [ 3, 4 ]  # height, width
+        @mock_recording.size = { lines: 3, columns: 4 } 
         @mock_recording.stream = [ { d: 0 } ]
 
         @mock_window = {}
@@ -75,9 +75,9 @@ describe 'save state', ->
         
         @player.load_from(state)
         first_line = (cell.char for cell in @player.sb.lines[0]).join("")
-        first_line.should.eql "hell"
-        @player.emulator.line.should.eql 2
-        @player.emulator.col.should.eql  2
+        first_line.should.eql "helo"
+        @player.emulator.line.should.eql 1
+        @player.emulator.col.should.eql  4
         
 
     it 'should handle interrupted escape sequences', ->

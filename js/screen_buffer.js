@@ -59,7 +59,7 @@ var ScreenBuffer,
 
   function ScreenBuffer(_arg) {
     var i;
-    this.height = _arg[0], this.width = _arg[1];
+    this.height = _arg.lines, this.width = _arg.columns;
     this.scroll_top = 1;
     this.scroll_bottom = this.height;
     this.primary = (function() {
@@ -92,26 +92,26 @@ var ScreenBuffer,
   };
 
   ScreenBuffer.prototype.put = function(chars, attr, line, col) {
-    var cell, i, _i, _ref;
+    var cell, i, _i, _ref, _ref1;
     line -= 1;
     col -= 1;
-    if (line >= this.scroll_bottom) {
-      line = this.scroll_bottom - 1;
-      this.scroll_up();
-    }
     for (i = _i = 0, _ref = chars.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
       cell = this.lines[line][col];
       cell.char = chars.charAt(i);
       cell.attrs.update_from(attr);
       this.dirty_lines[line] = true;
-      col += 1;
-      if (col >= this.width) {
-        col = this.width - 1;
-        col = 0;
-        line += 1;
-      }
+      _ref1 = this.cursor_forward_from(line, col), line = _ref1[0], col = _ref1[1];
     }
     return [line + 1, col + 1];
+  };
+
+  ScreenBuffer.prototype.cursor_forward_from = function(line, col) {
+    col += 1;
+    if (col >= this.width) {
+      console.dir([line, col]);
+      col = this.width - 1;
+    }
+    return [line, col];
   };
 
   ScreenBuffer.prototype.dirty = function(line) {
@@ -213,12 +213,13 @@ var ScreenBuffer,
   };
 
   ScreenBuffer.prototype.fill = function(from, to, char) {
-    var _this = this;
-    return this.each(from, to, function(line_no, cell) {
-      cell.char = char.char;
-      cell.attrs.update_from(char.attrs);
-      return _this.dirty_lines[line_no] = true;
-    });
+    return this.each(from, to, (function(_this) {
+      return function(line_no, cell) {
+        cell.char = char.char;
+        cell.attrs.update_from(char.attrs);
+        return _this.dirty_lines[line_no] = true;
+      };
+    })(this));
   };
 
   ScreenBuffer.prototype.clear = function(from, to) {

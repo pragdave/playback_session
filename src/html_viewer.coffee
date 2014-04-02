@@ -5,14 +5,14 @@ class HtmlViewer
     
     constructor: (@playback_window, @screen_buffer) ->
         @dom = $("<pre class=\"terminal\"></pre>")
-        char = $('<pre><span id="wibble">M</span></pre>')
+        char = $('<pre><span id="wibble" style="display: table-cell; background: red">MMMMMMMMMM</span></pre>')
         @lines = ($("<pre>&nbsp;</pre>") for line in [1..@screen_buffer.height])
-        @dom.append(@lines)
         @dom.append(char)
+        @dom.append(@lines)
         @playback_window.prepend(@dom)
         and_then = =>
                 width = $("#wibble").width()
-                @playback_window.css('width', (width * @screen_buffer.width + 48) + 'px')
+                @playback_window.css('width', ((width/10) * @screen_buffer.width + 48) + 'px')
                 char.remove()
                 @update()
         setTimeout(and_then, 0)
@@ -53,7 +53,7 @@ class HtmlViewer
             [ to.fg, to.bg ]
 
         css_attrs.push "f#{f}_"
-        css_attrs.push "b#{b}_"
+        css_attrs.push "b#{b}_" unless b == 0
 
         result.push "<span class=\"#{css_attrs.join(' ')}\">"
 

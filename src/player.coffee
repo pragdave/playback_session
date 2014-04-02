@@ -71,10 +71,35 @@ class Player
         @new_emulator()
         @emulator.update()
         if position > 0
-            @fast_forward(0, position) if position > 0
+            @move_to(position)
         else
             @trigger_update()
 
+    # called by the editor to move as fast as possible to a particular
+    # playback position if position > playhead, look backward from
+    # position for a saved snapshot, and play forward from it. If not
+    # found, play forward from the playhead. Otherwise, look backwards
+    # from the playhead for a snapshot we can use, playing forward either from
+    # it or from the 
+
+    move_to: (position) ->
+        return if position == @playhead
+        @playhead = 0 if position < @playhead
+        @playhead = @find_last_snapshot_between(@playhead, position)
+        finish = position
+        @current_time = @stream[@playhead].elapsed
+        if position == 0
+            @sb.clear_all()
+            @new_emulator()
+            @emulator.update()
+            
+        @step() while @playhead <= finish
+            
+
+    find_last_snapshot_between: (start, finish) ->
+        finish -= 1 while finish > start && @stream[finish].t != "snapshot"
+        finish
+        
     # called when the data is manually edited
     data_updated: (to_row) ->
         @playhead = to_row
@@ -120,8 +145,10 @@ class Player
         @state    = state.player.state
         @playhead = state.player.playhead
         @current_time = state.player.current_time
+        @emulator.update() 
+        @trigger_update()
             
-    save_state: ->
+    save_state: -> 
         state = 
             sb_dump:       @sb.save(),
             fsm_dump:      @fsm.save(),

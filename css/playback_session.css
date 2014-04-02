@@ -111,31 +111,12 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#004f63', end
 
 }
 
-.terminal {
-    background: #181a26;
-    color: white;
-    padding: 0.5em;
-    border-radius: 6px;
-background: #466e70; /* Old browsers */
-/* IE9 SVG, needs conditional override of 'filter' to 'none' */
-background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjNDY2ZTcwIiBzdG9wLW9wYWNpdHk9IjEiLz4KICAgIDxzdG9wIG9mZnNldD0iMzYlIiBzdG9wLWNvbG9yPSIjNGY4OTdjIiBzdG9wLW9wYWNpdHk9IjEiLz4KICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzFhM2YzNCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgPC9saW5lYXJHcmFkaWVudD4KICA8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2dyYWQtdWNnZy1nZW5lcmF0ZWQpIiAvPgo8L3N2Zz4=);
-background: -moz-linear-gradient(-45deg,  #466e70 0%, #4f897c 36%, #1a3f34 100%); /* FF3.6+ */
-background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#466e70), color-stop(36%,#4f897c), color-stop(100%,#1a3f34)); /* Chrome,Safari4+ */
-background: -webkit-linear-gradient(-45deg,  #466e70 0%,#4f897c 36%,#1a3f34 100%); /* Chrome10+,Safari5.1+ */
-background: -o-linear-gradient(-45deg,  #466e70 0%,#4f897c 36%,#1a3f34 100%); /* Opera 11.10+ */
-background: -ms-linear-gradient(-45deg,  #466e70 0%,#4f897c 36%,#1a3f34 100%); /* IE10+ */
-background: linear-gradient(135deg,  #466e70 0%,#4f897c 36%,#1a3f34 100%); /* W3C */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#466e70', endColorstr='#1a3f34',GradientType=1 ); /* IE6-8 fallback on horizontal gradient */
-
-}
-
-.reveal pre.terminal, .reveal pre.terminal pre {
+.reveal pre.terminal, pre.terminal {
     display: block;
     margin: 0px;
     padding: 0px 8px;
-    background: #181a26;
     font-family: "Lucida Console", Monaco, monospace;
-    font-size: 66% !important;
+    font-size: 90% !important;
     line-height: 125% !important;
     border: none;
     border-radius: 0px;
@@ -145,6 +126,36 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#466e70', end
     font-family: monospace;
     word-wrap: none;
     box-shadow: none;
+    background: #181a26;
+    color: white;
+    padding: 0.5em;
+    border-radius: 6px;
+
+background: #040a16; /* Old browsers */
+/* IE9 SVG, needs conditional override of 'filter' to 'none' */
+background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMDQwYTE2IiBzdG9wLW9wYWNpdHk9IjEiLz4KICAgIDxzdG9wIG9mZnNldD0iNTElIiBzdG9wLWNvbG9yPSIjMGExODM4IiBzdG9wLW9wYWNpdHk9IjEiLz4KICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzA0MGExNiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgPC9saW5lYXJHcmFkaWVudD4KICA8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2dyYWQtdWNnZy1nZW5lcmF0ZWQpIiAvPgo8L3N2Zz4=);
+background: -moz-linear-gradient(-45deg,  #040a16 0%, #0a1838 51%, #040a16 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#040a16), color-stop(51%,#0a1838), color-stop(100%,#040a16)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(-45deg,  #040a16 0%,#0a1838 51%,#040a16 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(-45deg,  #040a16 0%,#0a1838 51%,#040a16 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(-45deg,  #040a16 0%,#0a1838 51%,#040a16 100%); /* IE10+ */
+background: linear-gradient(135deg,  #040a16 0%,#0a1838 51%,#040a16 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#040a16', endColorstr='#040a16',GradientType=1 ); /* IE6-8 fallback on horizontal gradient */
+
+}
+
+pre.terminal pre {
+  margin: 0px;
+  font-size: 90% !important;
+  line-height: 125% !important;
+  box-shadow: none;
+  background-color: transparent;
+}
+
+.reveal pre.terminal, .reveal pre.terminal pre {
+    font-size: 66% !important;
+    line-height: 125% !important;
+    word-wrap: none;
 }
 
 

@@ -59,17 +59,18 @@ var Emulator,
   };
 
   Emulator.prototype.ich = function(_char, args) {
-    var count,
-      _this = this;
+    var count;
     count = args[0] || 1;
-    this.preserve_cursor(function() {
-      var i, _i, _results;
-      _results = [];
-      for (i = _i = 1; 1 <= count ? _i <= count : _i >= count; i = 1 <= count ? ++_i : --_i) {
-        _results.push(_this.echo_char(" ", _this.attr));
-      }
-      return _results;
-    });
+    this.preserve_cursor((function(_this) {
+      return function() {
+        var i, _i, _results;
+        _results = [];
+        for (i = _i = 1; 1 <= count ? _i <= count : _i >= count; i = 1 <= count ? ++_i : --_i) {
+          _results.push(_this.echo_char(" ", _this.attr));
+        }
+        return _results;
+      };
+    })(this));
     return this.update();
   };
 
@@ -174,9 +175,12 @@ var Emulator,
   };
 
   Emulator.prototype.decstbm = function(_char, args) {
+    console.log("Set scroll region");
+    console.dir(args);
     this.scroll_top = args[0] || 1;
     this.scroll_bottom = args[1] || this.sb.height;
-    return this.sb.set_scroll_region(this.scroll_top, this.scroll_bottom);
+    this.sb.set_scroll_region(this.scroll_top, this.scroll_bottom);
+    return this.cup(" ", [1, 1]);
   };
 
   Emulator.prototype.dsr = function(_char, args) {
@@ -236,12 +240,12 @@ var Emulator,
     _results = [];
     while (count > 0) {
       count -= 1;
-      this.line += 1;
-      if (this.line >= this.sb.height) {
-        this.line -= 1;
+      if (this.line === this.sb.scroll_bottom) {
         _results.push(this.sb.scroll_up());
+      } else if (this.line >= this.sb.scroll_top && this.line < this.sb.scroll_bottom) {
+        _results.push(this.line += 1);
       } else {
-        _results.push(void 0);
+
       }
     }
     return _results;
